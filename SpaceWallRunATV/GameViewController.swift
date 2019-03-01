@@ -485,9 +485,10 @@ extension GameViewController: SCNPhysicsContactDelegate {
         if contactNode.physicsBody?.categoryBitMask ==
             ColliderType.brick.rawValue {
             //game.score += 1
-            
+            let isBreakableBrick = contactNode.name != "UnbreakableBrick"
             let wallNode = contactNode.parent
-            if wallNode != nil {
+            if wallNode != nil,
+               isBreakableBrick  {
                 let position = SCNVector3Make(contactNode.presentation.position.x, contactNode.presentation.position.y, (wallNode?.position.z)!)
                 createExplosion(geometry: contactNode.geometry!,
                                 position: position,
@@ -504,7 +505,14 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 game.lives -= 1
                 
             }
-            contactNode.removeFromParentNode()
+            
+            if isBreakableBrick {
+                contactNode.removeFromParentNode()
+            } else {
+                if !wasShot {
+                    contactNode.removeFromParentNode()
+                }
+            }            
         }
 //        // 3
 //        if contactNode.physicsBody?.categoryBitMask ==
@@ -707,6 +715,7 @@ class BrickWall: NSObject {
             brickColor = UIColor.black
             brick.geometry?.firstMaterial?.transparency = 0.9
             brick.geometry?.firstMaterial?.specular.contents = UIColor.gray
+            brick.name = "UnbreakableBrick"
             
         default:
             brickColor = UIColor.cyan
