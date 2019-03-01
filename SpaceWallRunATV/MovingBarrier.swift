@@ -41,7 +41,7 @@ class MovingBarrier: NSObject {
     init(parentNode: SCNNode, baseBarrier: SCNNode) {
         
         super.init()
-        let wallScene = SCNScene(named: "art.scnassets/WallScene.scn")
+        _ = SCNScene(named: "art.scnassets/WallScene.scn")
         barrier1 = baseBarrier
         barrier2 = barrier1.clone()
         
@@ -84,7 +84,11 @@ class MovingBarrier: NSObject {
     func start() {
         //currentBarrier.runAction(SCNAction.moveBy(x: 0, y: 0, z: -500, duration: 30.0))
 //        SCNAction repeat
-        Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.checkLocation), userInfo: nil, repeats: true);
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            DispatchQueue.main.async {
+                self.checkLocation()
+            }
+        }
         
     }
     

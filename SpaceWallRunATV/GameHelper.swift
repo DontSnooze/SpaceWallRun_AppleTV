@@ -114,8 +114,9 @@ class GameHelper {
   
   func playSound(_ node:SCNNode, name:String) {
     let sound = sounds[name]
+    #if !targetEnvironment(simulator)
     node.runAction(SCNAction.playAudio(sound!, waitForCompletion: false))
-    
+    #endif
   }
   
   func reset() {

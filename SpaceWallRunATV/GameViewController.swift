@@ -60,16 +60,32 @@ class GameViewController: UIViewController {
         //setupJoysticks()
         setupSounds()
         game.playSound(shipNode, name: "bgSong")
-        timer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(self.addWall), userInfo: nil, repeats: true);
-        hudTimer = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(self.updateHud), userInfo: nil, repeats: true);
         setupRemote()
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+            DispatchQueue.main.async {
+                self.addWall()
+            }
+        }
+        
+        hudTimer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { _ in
+            DispatchQueue.main.async {
+                self.updateHud()
+            }
+        }
     }
     
     func setupSounds() {
+        #if !targetEnvironment(simulator)
         game.loadSound("Brick",
                        fileNamed: "ExplodeGood.wav", loops: false)
         game.loadSound("bgSong",
                        fileNamed: "SuperTrebleTest.mp3", loops: true)
+        #endif
     }
     
     func setupHUD() {
@@ -79,7 +95,7 @@ class GameViewController: UIViewController {
     
     func setupRemote() {
         let playPauseRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.playPauseButtonPressed(_:)))
-        playPauseRecognizer.allowedPressTypes = [NSNumber(value: UIPressType.playPause.rawValue)];
+        playPauseRecognizer.allowedPressTypes = [NSNumber(value: UIPress.PressType.playPause.rawValue)];
         self.view.addGestureRecognizer(playPauseRecognizer)
         
 //        let shootRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.shootPressed(_:)))
@@ -245,22 +261,18 @@ class GameViewController: UIViewController {
         movingBarriers.start()
     }
     
-    func addWall() {
+    @objc func addWall() {
         let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin]
-        
-        
         
         let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
         let randomIndex:Int = Int(randomNum)
         
         let newWall = BrickWall(position: SCNVector3Make(0, 0, 190.0), forGameMode:possibleModes[randomIndex])
-        
-        
+
         scnScene.rootNode.addChildNode(newWall.node)
-        
     }
     
-    func updateHud() {
+    @objc func updateHud() {
         self.hudLabel.text = game.labelNode.text
     }
     
@@ -537,6 +549,7 @@ class BrickWall: NSObject {
 //        let wallScene = SCNScene(named: "art.scnassets/WallScene.scn")
 //        node = wallScene?.rootNode.childNode(withName:
 //            "Wall", recursively: true)!.clone()
+        
         node = createBrickWall(width: 4, height: 8, position: position, forGameMode: forGameMode)
         
         node.position = position
@@ -587,25 +600,28 @@ class BrickWall: NSObject {
         }
         
         if forGameMode == .spin {
-            var min = node.boundingBox.min
-            var max = node.boundingBox.max
+            let min = node.boundingBox.min
+            let max = node.boundingBox.max
             
             let w = CGFloat(max.x - min.x)
-            let h = CGFloat(max.y - min.y)
-            let l =  CGFloat( max.z - min.z)
+            _ = CGFloat(max.y - min.y)
+            _ =  CGFloat( max.z - min.z)
             
-            let rotationValue = 2*M_PI
+            let rotationValue = 2 * Double.pi
             let pivot = w / 2
             node.pivot = SCNMatrix4MakeTranslation(Float(pivot),0,0)
             node.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: CGFloat(rotationValue), z: 0, duration: 1)))
         }
         
         startBrickCount = node.childNodes.count
-        Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.checkLocation), userInfo: nil, repeats: true);
-        
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            DispatchQueue.main.async {
+                self.checkLocation()
+            }
+        }
     }
     
-    func checkLocation() {
+    @objc func checkLocation() {
         if gameMode == .fullMove {
             if node.position .z < 25 {
                 
@@ -660,13 +676,15 @@ class BrickWall: NSObject {
     func createBrick(position: SCNVector3, forGameMode: GameModeType) -> SCNNode {
         let g = SCNBox(width: 2.0, height: 1.0, length: 1.0, chamferRadius: 0.05)
         let brick = SCNNode(geometry: g)
-        brick.physicsBody = SCNPhysicsBody(type: .kinematic, shape: SCNPhysicsShape(node: brick, options: nil))
-        brick.physicsBody?.contactTestBitMask = ColliderType.ship.rawValue
-        brick.physicsBody?.categoryBitMask = ColliderType.brick.rawValue
+        
         
         brick.name = "brick"
         brick.position = position
         
+        #if !targetEnvironment(simulator)
+        brick.physicsBody = SCNPhysicsBody(type: .kinematic, shape: SCNPhysicsShape(node: brick, options: nil))
+        brick.physicsBody?.contactTestBitMask = ColliderType.ship.rawValue
+        brick.physicsBody?.categoryBitMask = ColliderType.brick.rawValue
         brick.physicsBody?.mass = 1.0
         brick.physicsBody?.friction = 0
         brick.physicsBody?.restitution = 0
@@ -675,6 +693,8 @@ class BrickWall: NSObject {
         brick.physicsBody?.angularDamping = 0
         brick.physicsBody?.charge = 0
         brick.physicsBody?.isAffectedByGravity = false
+        #endif
+        
         brick.geometry?.firstMaterial?.transparency = 0.75
         
         
@@ -693,9 +713,6 @@ class BrickWall: NSObject {
         }
         brick.geometry?.firstMaterial?.diffuse.contents = brickColor
         
-        
-        
-        
         return brick
     }
     
@@ -705,6 +722,7 @@ class BrickWall: NSObject {
         
         let wall = SCNNode()
         wall.name = "Wall"
+        
         var brickPosition = SCNVector3Make(1, 0.5, 0)
         for i in 1...numberOfBricks {
             let wallBrick = createBrick(position: brickPosition, forGameMode: forGameMode)
@@ -743,8 +761,11 @@ class Fireball: NSObject {
         node.position = position
         
         node.runAction(SCNAction.repeatForever(SCNAction.moveBy(x: 0, y: 0, z: 20.0, duration: 1.0)))
-        timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.checkLocation), userInfo: nil, repeats: true);
-        
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+            DispatchQueue.main.async {
+                self.checkLocation()
+            }
+        }
     }
     
     func checkLocation() {
