@@ -37,6 +37,7 @@ class GameHelper {
   var lastScore:Int
   var lives:Int
   var state = GameStateType.TapToPlay
+    var extraLifeScore:Int = 1000
   
   var hudNode:SCNNode!
   var labelNode:SKLabelNode!
@@ -66,6 +67,14 @@ class GameHelper {
     let defaults = UserDefaults.standard
     defaults.set(0, forKey: "lastScore")
     defaults.set(highScore, forKey: "highScore")
+    
+    if score > extraLifeScore {
+        extraLifeScore += 1000
+        lives += 1
+    }
+    if lives < 0 {
+        reset()
+    }
   }
   
   func getScoreString(_ length:Int) -> String {
@@ -122,6 +131,7 @@ class GameHelper {
   func reset() {
     score = 0
     lives = 10
+    extraLifeScore = 1000
   }
   
   func shakeNode(_ node:SCNNode) {
