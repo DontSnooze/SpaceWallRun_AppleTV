@@ -22,16 +22,22 @@ enum GameModeType: Int {
     case fullMove  = 1
     case angleMove = 2
     case spin = 3
+    case shootThru = 4
 }
 
 func randomGameModeType() -> GameModeType {
-    let possibles:[GameModeType] = [.thru, .fullMove, .angleMove, .spin]
+    let possibles:[GameModeType] = [.thru, .fullMove, .angleMove, .spin, .shootThru]
     
     let randomNum:UInt32 = arc4random_uniform(UInt32(possibles.count))
     let randomIndex:Int = Int(randomNum)
     
     let result = possibles[randomIndex]
     return result
+}
+
+enum BrickType: Int {
+    case breakable     = 0
+    case unbreakable  = 1
 }
 
 enum SpinType: Int {
@@ -325,7 +331,7 @@ class GameViewController: UIViewController {
     }
     
     @objc func addWall() {
-        let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin]
+        let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin, .shootThru]
         
         let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
         let randomIndex:Int = Int(randomNum)
@@ -356,7 +362,6 @@ class GameViewController: UIViewController {
         let randomNum:UInt32 = arc4random_uniform(UInt32(nodeCount))
         let blockIndex:Int = Int(randomNum)
         fromWall.childNodes[blockIndex].removeFromParentNode()
-        
     }
     
     class func removeFourRandomBlocks(fromWall:SCNNode, gridWidth: Int, gridHeight: Int) {
@@ -370,7 +375,6 @@ class GameViewController: UIViewController {
         
         if (startBlockIndex + 1) % gridWidth == 0 {
             secondBlockIndex = startBlockIndex - 1
-            
         }
         
         thirdBlockIndex = startBlockIndex + gridWidth
@@ -378,16 +382,49 @@ class GameViewController: UIViewController {
             thirdBlockIndex = startBlockIndex - gridWidth
         }
         
-        
         fourthBlockIndex = thirdBlockIndex + 1
         if (thirdBlockIndex + 1) % gridWidth == 0 {
             fourthBlockIndex = thirdBlockIndex - 1
-            
         }
+        
         let boxes = [fromWall.childNodes[startBlockIndex],fromWall.childNodes[secondBlockIndex],fromWall.childNodes[thirdBlockIndex],fromWall.childNodes[fourthBlockIndex]]
         
         for node in boxes {
             node.removeFromParentNode()
+        }
+    }
+    
+    class func replaceFourRandomBlocks(fromWall:SCNNode, gridWidth: Int, gridHeight: Int, with: BrickType) {
+        let nodeCount = fromWall.childNodes.count
+        let randomNum:UInt32 = arc4random_uniform(UInt32(nodeCount))
+        
+        let startBlockIndex:Int = Int(randomNum)
+        var secondBlockIndex = startBlockIndex + 1
+        var thirdBlockIndex = 0
+        var fourthBlockIndex = 0
+        
+        if (startBlockIndex + 1) % gridWidth == 0 {
+            secondBlockIndex = startBlockIndex - 1
+        }
+        
+        thirdBlockIndex = startBlockIndex + gridWidth
+        if (startBlockIndex + 1) > nodeCount - gridWidth {
+            thirdBlockIndex = startBlockIndex - gridWidth
+        }
+        
+        fourthBlockIndex = thirdBlockIndex + 1
+        if (thirdBlockIndex + 1) % gridWidth == 0 {
+            fourthBlockIndex = thirdBlockIndex - 1
+        }
+        
+        let boxes = [fromWall.childNodes[startBlockIndex],fromWall.childNodes[secondBlockIndex],fromWall.childNodes[thirdBlockIndex],fromWall.childNodes[fourthBlockIndex]]
+        
+        for node in boxes {
+            let newBreakableBrick = BrickWall.createBrick(position: node.position, forGameMode: .spin)
+            
+            //newBreakableBrick.geometry?.firstMaterial?.transparency = 0.75
+            //newBreakableBrick.geometry?.firstMaterial?.specular.contents = UIColor.blue
+            fromWall.replaceChildNode(node, with: newBreakableBrick)
         }
     }
     
@@ -654,6 +691,9 @@ class BrickWall: NSObject {
         if forGameMode == .thru {
             GameViewController.removeFourRandomBlocks(fromWall: node!, gridWidth: 4, gridHeight: 8)
         }
+        if forGameMode == .shootThru {
+            GameViewController.replaceFourRandomBlocks(fromWall: node, gridWidth: 4, gridHeight: 8, with: .unbreakable)
+        }
         if forGameMode == .angleMove {
             let spins = [-2, -1, 1, 2]
             let randomNum1:UInt32 = arc4random_uniform(UInt32(spins.count))
@@ -819,7 +859,7 @@ class BrickWall: NSObject {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createBrick(position: SCNVector3, forGameMode: GameModeType) -> SCNNode {
+    class func createBrick(position: SCNVector3, forGameMode: GameModeType) -> SCNNode {
         let g = SCNBox(width: 2.0, height: 1.0, length: 1.0, chamferRadius: 0.05)
         let brick = SCNNode(geometry: g)
         
@@ -854,6 +894,11 @@ class BrickWall: NSObject {
             brick.geometry?.firstMaterial?.transparency = 0.9
             brick.geometry?.firstMaterial?.specular.contents = UIColor.gray
             brick.name = "UnbreakableBrick"
+        case .shootThru:
+            brickColor = UIColor.black
+            brick.geometry?.firstMaterial?.transparency = 0.9
+            brick.geometry?.firstMaterial?.specular.contents = UIColor.gray
+            brick.name = "UnbreakableBrick"
             
         default:
             brickColor = UIColor.cyan
@@ -875,7 +920,7 @@ class BrickWall: NSObject {
         
         var brickPosition = SCNVector3Make(1, 0.5, 0)
         for i in 1...numberOfBricks {
-            let wallBrick = createBrick(position: brickPosition, forGameMode: forGameMode)
+            let wallBrick = BrickWall.createBrick(position: brickPosition, forGameMode: forGameMode)
             wall.addChildNode(wallBrick)
             if i % 4 == 0 {
                 brickPosition.x = 1
