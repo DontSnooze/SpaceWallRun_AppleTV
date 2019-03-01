@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9C8CE5BA2229163E00AAF47E /* blaster.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9C8CE5B92229163E00AAF47E /* blaster.mp3 */; };
+		9C8CE5C02229D78800AAF47E /* BrickWall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5BF2229D78800AAF47E /* BrickWall.swift */; };
+		9C8CE5C22229D7D500AAF47E /* Fireball.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5C12229D7D500AAF47E /* Fireball.swift */; };
 		B0698AB21DFD7E8E0031652F /* FireParticle.scnp in Resources */ = {isa = PBXBuildFile; fileRef = B0698AB11DFD7E8E0031652F /* FireParticle.scnp */; };
 		B0A07A3E1DFA523600734BC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */; };
 		B0A07A401DFA523600734BC3 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = B0A07A3F1DFA523600734BC3 /* art.scnassets */; };
@@ -47,6 +49,8 @@
 
 /* Begin PBXFileReference section */
 		9C8CE5B92229163E00AAF47E /* blaster.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = blaster.mp3; sourceTree = "<group>"; };
+		9C8CE5BF2229D78800AAF47E /* BrickWall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickWall.swift; sourceTree = "<group>"; };
+		9C8CE5C12229D7D500AAF47E /* Fireball.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fireball.swift; sourceTree = "<group>"; };
 		B0698AB11DFD7E8E0031652F /* FireParticle.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = FireParticle.scnp; sourceTree = "<group>"; };
 		B0A07A3A1DFA523600734BC3 /* SpaceWallRunATV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceWallRunATV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -134,6 +138,8 @@
 				B0A07A6A1DFA534200734BC3 /* ship.scnassets */,
 				B0A07A3F1DFA523600734BC3 /* art.scnassets */,
 				B0A07A781DFA53BD00734BC3 /* GameViewController.swift */,
+				9C8CE5BF2229D78800AAF47E /* BrickWall.swift */,
+				9C8CE5C12229D7D500AAF47E /* Fireball.swift */,
 				B0A07A791DFA53BD00734BC3 /* MovingBarrier.swift */,
 				B0A07A6C1DFA536200734BC3 /* SCNAction+Extensions.swift */,
 				B0A07A6D1DFA536200734BC3 /* SCNVector3+Extensions.swift */,
@@ -317,7 +323,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C8CE5C02229D78800AAF47E /* BrickWall.swift in Sources */,
 				B0A07A7A1DFA53BD00734BC3 /* GameViewController.swift in Sources */,
+				9C8CE5C22229D7D500AAF47E /* Fireball.swift in Sources */,
 				B0A07A751DFA537000734BC3 /* GameHelper.swift in Sources */,
 				B0A07A3E1DFA523600734BC3 /* AppDelegate.swift in Sources */,
 				B0A07A7B1DFA53BD00734BC3 /* MovingBarrier.swift in Sources */,
