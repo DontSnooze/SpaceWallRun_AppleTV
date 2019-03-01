@@ -24,6 +24,64 @@ enum GameModeType: Int {
     case spin = 3
 }
 
+func randomGameModeType() -> GameModeType {
+    let possibles:[GameModeType] = [.thru, .fullMove, .angleMove, .spin]
+    
+    let randomNum:UInt32 = arc4random_uniform(UInt32(possibles.count))
+    let randomIndex:Int = Int(randomNum)
+    
+    let result = possibles[randomIndex]
+    return result
+}
+
+enum SpinType: Int {
+    case left     = 0
+    case center  = 1
+    case right = 2
+    case top = 3
+    case bottom = 4
+}
+
+func randomSpinType() -> SpinType {
+    let possibles:[SpinType] = [.left, .center, .right, .top, .bottom]
+    
+    let randomNum:UInt32 = arc4random_uniform(UInt32(possibles.count))
+    let randomIndex:Int = Int(randomNum)
+    
+    let result = possibles[randomIndex]
+    return result
+}
+
+enum SpinDirection: Int {
+    case clockwise
+    case counterClockwise
+}
+
+func randomSpinDirection() -> SpinDirection {
+    let possibles:[SpinDirection] = [.clockwise, .counterClockwise]
+    
+    let randomNum:UInt32 = arc4random_uniform(UInt32(possibles.count))
+    let randomIndex:Int = Int(randomNum)
+    
+    let result = possibles[randomIndex]
+    return result
+}
+
+enum SpinAxis: Int {
+    case x
+    case y
+}
+
+func randomSpinAxis() -> SpinAxis {
+    let possibles:[SpinAxis] = [.x, .y]
+    
+    let randomNum:UInt32 = arc4random_uniform(UInt32(possibles.count))
+    let randomIndex:Int = Int(randomNum)
+    
+    let result = possibles[randomIndex]
+    return result
+}
+
 class GameViewController: UIViewController {
 
     @IBOutlet weak var scnView: SCNView!
@@ -45,6 +103,7 @@ class GameViewController: UIViewController {
     var movingBarriers: MovingBarrier!
     var gameMode:GameModeType = .thru
     var pointTally = 0
+    var unbreakableWalls = [SCNNode]()
     
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
@@ -62,6 +121,8 @@ class GameViewController: UIViewController {
         game.playSound(shipNode, name: "bgSong")
         setupRemote()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.willRemoveUnbreakableWall(_:)), name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nil)
+
         
     }
     
@@ -269,8 +330,12 @@ class GameViewController: UIViewController {
         let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
         let randomIndex:Int = Int(randomNum)
         
-        let newWall = BrickWall(position: SCNVector3Make(0, 0, 190.0), forGameMode:possibleModes[randomIndex])
-
+        let gameMode = possibleModes[randomIndex]
+        let newWall = BrickWall(position: SCNVector3Make(0, 0, 190.0), forGameMode:gameMode)
+        if gameMode == .thru {
+            unbreakableWalls.append(newWall.node)
+        }
+        
         scnScene.rootNode.addChildNode(newWall.node)
     }
     
@@ -361,6 +426,9 @@ class GameViewController: UIViewController {
                 nil)!
         fire.emitterShape = leftFireball.node.geometry
         fire.birthLocation = .surface
+        fire.colliderNodes = unbreakableWalls
+        fire.particleDiesOnCollision = true
+        
         leftFireball.node.geometry?.firstMaterial?.diffuse.contents = UIColor.black
         rightFireball.node.geometry?.firstMaterial?.diffuse.contents = UIColor.black
         
@@ -435,6 +503,16 @@ class GameViewController: UIViewController {
             shipNode.position.x = 7
         }
         updateShipCamera()
+    }
+    
+    // handle notification
+    @objc func willRemoveUnbreakableWall(_ notification: NSNotification) {
+        print(notification.userInfo ?? "")
+        if let dict = notification.userInfo as NSDictionary?,
+            let thisNode = dict["node"] as? SCNNode {
+            let walls = unbreakableWalls.filter { $0 != thisNode }
+            unbreakableWalls = walls
+        }
     }
 }
 
@@ -513,7 +591,12 @@ extension GameViewController: SCNPhysicsContactDelegate {
             if isBreakableBrick {
                 contactNode.removeFromParentNode()
             } else {
-                if !wasShot {
+                if wasShot {
+                    // trying to stop the particles from going thru the unbreakable walls (none of this works)
+                    fireball.removeAllActions()
+                    fireball.removeAllParticleSystems()
+                    fireball.removeFromParentNode()
+                } else {
                     contactNode.removeFromParentNode()
                 }
             }
@@ -600,8 +683,6 @@ class BrickWall: NSObject {
             
             let possibleDirections = [left, up,]
             
-            
-            
             let randomNum:UInt32 = arc4random_uniform(UInt32(possibleDirections.count))
             let randomIndex:Int = Int(randomNum)
             
@@ -616,13 +697,62 @@ class BrickWall: NSObject {
             let max = node.boundingBox.max
             
             let w = CGFloat(max.x - min.x)
-            _ = CGFloat(max.y - min.y)
-            _ =  CGFloat( max.z - min.z)
+            let h = CGFloat(max.y - min.y)
+            let l =  CGFloat( max.z - min.z)
             
-            let rotationValue = 2 * Double.pi
-            let pivot = w / 2
-            node.pivot = SCNMatrix4MakeTranslation(Float(pivot),0,0)
-            node.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: CGFloat(rotationValue), z: 0, duration: 1)))
+            let spinType = randomSpinType()
+            let spinDirection = randomSpinDirection()
+            var spinAxis = randomSpinAxis()
+            var rotationValue = 2 * Double.pi
+            var pivot = w / 2
+            var moveXByAmount:CGFloat = 0;
+            var moveYByAmount:CGFloat = 0;
+            var rotationAction = SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: CGFloat(-rotationValue), z: 0, duration: 1))
+            if spinDirection == .clockwise {
+                rotationValue = -rotationValue
+            }
+            
+            switch (spinType) {
+            case .left:
+                moveXByAmount = w
+                spinAxis = .y
+                break;
+            case .center:
+                if spinAxis == .x {
+                    moveYByAmount = h / 2
+                } else {
+                    moveXByAmount = w / 2
+                }
+                break;
+            case .right:
+                moveXByAmount = 0
+                spinAxis = .y
+                break;
+            case .top:
+                moveYByAmount = h
+                spinAxis = .x
+                break;
+            case .bottom:
+                spinAxis = .x
+                break;
+            }
+            
+            node.pivot = SCNMatrix4MakeTranslation(Float(pivot), 0, 0)
+            if spinAxis == .x {
+                pivot = h / 2
+                node.pivot = SCNMatrix4MakeTranslation(0, Float(pivot), 0)
+                rotationAction = SCNAction.repeatForever(SCNAction.rotateBy(x: CGFloat(rotationValue), y: 0, z: 0, duration: 1))
+            }
+            
+            if spinAxis == .y {
+                pivot = w / 2
+                node.pivot = SCNMatrix4MakeTranslation(Float(pivot), 0, 0)
+                rotationAction = SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: CGFloat(rotationValue), z: 0, duration: 1))
+            }
+            
+            node.runAction(SCNAction.moveBy(x: moveXByAmount, y: moveYByAmount, z: 0, duration: 1))
+            
+            node.runAction(rotationAction)
         }
         
         startBrickCount = node.childNodes.count
@@ -671,7 +801,11 @@ class BrickWall: NSObject {
                     wallScore =  startBrickCount - endBrickCount
                 }
             }
-            
+            if node.name == "UnbreakableWall" {
+                let nodeDict:[String: SCNNode] = ["node": node]
+
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nodeDict)
+            }
             GameHelper.sharedInstance.score += wallScore
             GameHelper.sharedInstance.saveState()
             node.removeFromParentNode()
@@ -735,6 +869,9 @@ class BrickWall: NSObject {
         
         let wall = SCNNode()
         wall.name = "Wall"
+        if forGameMode == .thru {
+            wall.name = "UnbreakableWall"
+        }
         
         var brickPosition = SCNVector3Make(1, 0.5, 0)
         for i in 1...numberOfBricks {
