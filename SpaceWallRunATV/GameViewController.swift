@@ -83,6 +83,8 @@ class GameViewController: UIViewController {
         #if !targetEnvironment(simulator)
         game.loadSound("Brick",
                        fileNamed: "ExplodeGood.wav", loops: false)
+        game.loadSound("Blaster",
+                       fileNamed: "blaster.mp3", loops: false)
         game.loadSound("bgSong",
                        fileNamed: "SuperTrebleTest.mp3", loops: true)
         #endif
@@ -376,6 +378,8 @@ class GameViewController: UIViewController {
         rightFireball.node.addParticleSystem(fire)
         scnScene.rootNode.addChildNode(leftFireball.node)
         scnScene.rootNode.addChildNode(rightFireball.node)
+        
+        game.playSound(scnScene.rootNode, name: "Blaster")
     }
     /*
     override var shouldAutorotate: Bool {
@@ -512,7 +516,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 if !wasShot {
                     contactNode.removeFromParentNode()
                 }
-            }            
+            }
         }
 //        // 3
 //        if contactNode.physicsBody?.categoryBitMask ==

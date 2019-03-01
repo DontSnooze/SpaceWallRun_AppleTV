@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C8CE5BA2229163E00AAF47E /* blaster.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9C8CE5B92229163E00AAF47E /* blaster.mp3 */; };
 		B0698AB21DFD7E8E0031652F /* FireParticle.scnp in Resources */ = {isa = PBXBuildFile; fileRef = B0698AB11DFD7E8E0031652F /* FireParticle.scnp */; };
 		B0A07A3E1DFA523600734BC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */; };
 		B0A07A401DFA523600734BC3 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = B0A07A3F1DFA523600734BC3 /* art.scnassets */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9C8CE5B92229163E00AAF47E /* blaster.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = blaster.mp3; sourceTree = "<group>"; };
 		B0698AB11DFD7E8E0031652F /* FireParticle.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = FireParticle.scnp; sourceTree = "<group>"; };
 		B0A07A3A1DFA523600734BC3 /* SpaceWallRunATV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceWallRunATV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -96,6 +98,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C8CE5B82229162400AAF47E /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				B0A07A731DFA537000734BC3 /* SuperTrebleTest.mp3 */,
+				9C8CE5B92229163E00AAF47E /* blaster.mp3 */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
 		B0A07A311DFA523600734BC3 = {
 			isa = PBXGroup;
 			children = (
@@ -132,7 +143,7 @@
 				B0DE984B1DFD3F9D00BC6BDB /* spark.png */,
 				B0A07A711DFA537000734BC3 /* GameHelper.swift */,
 				B0A07A721DFA537000734BC3 /* ExplodeGood.wav */,
-				B0A07A731DFA537000734BC3 /* SuperTrebleTest.mp3 */,
+				9C8CE5B82229162400AAF47E /* Audio */,
 				B0A07A7E1DFA546600734BC3 /* Main.storyboard */,
 				B0A07A461DFA523600734BC3 /* Assets.xcassets */,
 				B0A07A481DFA523600734BC3 /* Info.plist */,
@@ -271,6 +282,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C8CE5BA2229163E00AAF47E /* blaster.mp3 in Resources */,
 				B0A07A7F1DFA546600734BC3 /* Main.storyboard in Resources */,
 				B0DE984D1DFD3F9D00BC6BDB /* spark.png in Resources */,
 				B0DE984C1DFD3F9D00BC6BDB /* Fire.scnp in Resources */,
