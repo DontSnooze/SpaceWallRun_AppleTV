@@ -135,6 +135,7 @@ class GameViewController: UIViewController {
         timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
             DispatchQueue.main.async {
                 self.addWall()
+                self.addBrickBarrier()
             }
         }
         
@@ -325,11 +326,12 @@ class GameViewController: UIViewController {
         // setup moving barriers
         let barriers = scnScene.rootNode.childNode(withName:
             "Barriers", recursively: true)!
-        movingBarriers = MovingBarrier(parentNode: scnScene.rootNode, baseBarrier: barriers)
+        /*movingBarriers = MovingBarrier(parentNode: scnScene.rootNode, baseBarrier: barriers)
         movingBarriers.start()
+ */
     }
     
-    @objc func addWall() {
+    func addWall() {
         let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin, .shootThru]
         
         let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
@@ -340,6 +342,18 @@ class GameViewController: UIViewController {
         if gameMode == .thru {
             unbreakableWalls.append(newWall.node)
         }
+        
+        scnScene.rootNode.addChildNode(newWall.node)
+    }
+    
+    func addBrickBarrier() {
+        let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin, .shootThru]
+        
+        let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
+        let randomIndex:Int = Int(randomNum)
+        
+        let gameMode = possibleModes[randomIndex]
+        let newWall = BrickBarrier(position: SCNVector3Make(-3, 0, 190.0), forGameMode:gameMode)
         
         scnScene.rootNode.addChildNode(newWall.node)
     }
