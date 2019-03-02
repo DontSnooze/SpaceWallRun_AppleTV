@@ -106,6 +106,7 @@ class GameViewController: UIViewController {
     var game = GameHelper.sharedInstance
     var spriteScene: SKScene!
     var movingBarriers: MovingBarrier!
+    var movingBrickBarriers: BrickBarrier!
     var gameMode:GameModeType = .thru
     var pointTally = 0
     var unbreakableWalls = [SCNNode]()
@@ -135,7 +136,6 @@ class GameViewController: UIViewController {
         timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
             DispatchQueue.main.async {
                 self.addWall()
-                self.addBrickBarrier()
             }
         }
         
@@ -191,7 +191,7 @@ class GameViewController: UIViewController {
         self.view.addGestureRecognizer(panGestureRecognizer)
 
     }
-    /*
+    /*.start
     func setupJoysticks() {
         
         moveAnalogStick.position = CGPoint(x: moveAnalogStick.radius + 15, y: moveAnalogStick.radius + 15)
@@ -323,12 +323,16 @@ class GameViewController: UIViewController {
                                         recursively: true)!
         scnView.pointOfView = shipCameraNode
         
-        // setup moving barriers
+//         setup moving barriers
         let barriers = scnScene.rootNode.childNode(withName:
             "Barriers", recursively: true)!
-        /*movingBarriers = MovingBarrier(parentNode: scnScene.rootNode, baseBarrier: barriers)
+        movingBarriers = MovingBarrier(parentNode: scnScene.rootNode, baseBarrier: barriers)
         movingBarriers.start()
- */
+
+        let brickBarrier = BrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), parentNode: scnScene.rootNode, forGameMode: .thru)
+        
+//        movingBrickBarriers = BrickBarrier(parentNode: scnScene.rootNode, baseBarrier: brickBarrier.barrier1)
+//        movingBrickBarriers.start()
     }
     
     func addWall() {
@@ -352,10 +356,10 @@ class GameViewController: UIViewController {
         let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
         let randomIndex:Int = Int(randomNum)
         
-        let gameMode = possibleModes[randomIndex]
-        let newWall = BrickBarrier(position: SCNVector3Make(-3, 0, 190.0), forGameMode:gameMode)
-        
-        scnScene.rootNode.addChildNode(newWall.node)
+//        let gameMode = possibleModes[randomIndex]
+//        let newWall = BrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), forGameMode:gameMode)
+//
+//        scnScene.rootNode.addChildNode(newWall.node)
     }
     
     @objc func updateHud() {
@@ -617,6 +621,11 @@ extension GameViewController: SCNPhysicsContactDelegate {
         if contactNode.physicsBody?.categoryBitMask ==
             ColliderType.brick.rawValue {
             //game.score += 1
+            let isBarrierBrick = contactNode.name == "BarrierBrick"
+            if isBarrierBrick {
+                return;
+            }
+            
             let isBreakableBrick = contactNode.name != "UnbreakableBrick"
             let wallNode = contactNode.parent
             if wallNode != nil,

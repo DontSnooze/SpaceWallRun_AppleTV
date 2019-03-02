@@ -10,29 +10,35 @@ import UIKit
 import SceneKit
 
 class BrickBarrier: NSObject {
-    var startBrickCount:Int = 0
-    var endBrickCount:Int = 0
-    var wallScore:Int = 0
     var timer = Timer()
-    var node:SCNNode!
-    var gotWallScore = false
-    var pointsPerWall = 4
+    var barrier1:SCNNode!
+    var barrier2: SCNNode!
+    var startingPosition: SCNVector3!
+    var currentBarrier: SCNNode!
     var gameMode: GameModeType = .thru
-    var hasStartedFullMove = false;
     
-    init(position: SCNVector3, forGameMode: GameModeType) {
+    init(position: SCNVector3, parentNode: SCNNode, forGameMode: GameModeType) {
         
         super.init()
         //        let wallScene = SCNScene(named: "art.scnassets/WallScene.scn")
         //        node = wallScene?.rootNode.childNode(withName:
         //            "Wall", recursively: true)!.clone()
         
-        node = createBrickBarrier(width: 4, height: 4, position: position, forGameMode: forGameMode)
+        barrier1 = createBrickBarrier(width: 40, height: 4, position: position, forGameMode: forGameMode)
+        barrier2 = createBrickBarrier(width: 40, height: 4, position: position, forGameMode: forGameMode)
         
-        node.position = position
+        startingPosition = position
+        barrier1.position = position
+        barrier2.position = position
+        barrier2.position.z = barrier2.position.z + 300
+        currentBarrier = barrier1
         
-        node.runAction(SCNAction.moveBy(x: 0, y: 0, z: -240.0, duration: 20.0))
+        //node.runAction(SCNAction.moveBy(x: 0, y: 0, z: -240.0, duration: 20.0))
         gameMode = forGameMode
+        
+        parentNode.addChildNode(barrier1)
+        parentNode.addChildNode(barrier2)
+        
         
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
             DispatchQueue.main.async {
@@ -41,17 +47,57 @@ class BrickBarrier: NSObject {
         }
     }
     
-    @objc func checkLocation() {
+    init(parentNode: SCNNode, baseBarrier: SCNNode) {
         
-        if node.position.z < -8 {
-            
-            node.removeFromParentNode()
+        super.init()
+        barrier1 = baseBarrier
+        barrier2 = barrier1.clone()
+        
+        startingPosition = baseBarrier.position
+        barrier1.position = startingPosition
+        barrier2.position = startingPosition
+        barrier2.position.z = barrier2.position.z + 300
+        
+        
+        
+        currentBarrier = barrier1
+        //        parentNode.addChildNode(barrier1)
+        
+        parentNode.addChildNode(barrier2)
+        barrier1.runAction(SCNAction.repeatForever(SCNAction.moveBy(x: 0, y: 0, z: -20, duration: 1)))
+        barrier2.runAction(SCNAction.repeatForever(SCNAction.moveBy(x: 0, y: 0, z: -20, duration: 1)))
+        
+        //        barrier1.isHidden = true
+        //        barrier2.isHidden = true
+        
+    }
+    
+    func checkLocation() {
+        if currentBarrier.position.z < -20 {
             timer.invalidate()
+            // add the other barrier to the end
+            currentBarrier = barrier1 == currentBarrier ? barrier2 : barrier1
+            
+            // 300 is the width of the barrier
+            // 122 is the original z position of the barrier
+            currentBarrier?.position.z = 275
+            start()
         }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func start() {
+        //currentBarrier.runAction(SCNAction.moveBy(x: 0, y: 0, z: -500, duration: 30.0))
+        //        SCNAction repeat
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            DispatchQueue.main.async {
+                self.checkLocation()
+            }
+        }
+        
     }
     
     class func createBarrierBrick(position: SCNVector3, forGameMode: GameModeType) -> SCNNode {
@@ -79,7 +125,6 @@ class BrickBarrier: NSObject {
         let brickColor = UIColor.black
         brick.geometry?.firstMaterial?.transparency = 0.9
         brick.geometry?.firstMaterial?.specular.contents = UIColor.gray
-        brick.name = "UnbreakableBrick"
         brick.geometry?.firstMaterial?.diffuse.contents = brickColor
         
         return brick
@@ -96,7 +141,7 @@ class BrickBarrier: NSObject {
         for i in 1...numberOfBricks {
             let wallBrick = BrickBarrier.createBarrierBrick(position: brickPosition, forGameMode: forGameMode)
             wall.addChildNode(wallBrick)
-            if i % 4 == 0 {
+            if i % width == 0 {
                 brickPosition.z = 0
                 brickPosition.y += 2
             } else {

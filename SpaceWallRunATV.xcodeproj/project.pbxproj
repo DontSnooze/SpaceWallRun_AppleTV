@@ -107,10 +107,61 @@
 		9C8CE5B82229162400AAF47E /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				B0A07A721DFA537000734BC3 /* ExplodeGood.wav */,
 				B0A07A731DFA537000734BC3 /* SuperTrebleTest.mp3 */,
 				9C8CE5B92229163E00AAF47E /* blaster.mp3 */,
 			);
 			path = Audio;
+			sourceTree = "<group>";
+		};
+		9C8CE5C52229F23200AAF47E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9C8CE5B82229162400AAF47E /* Audio */,
+				B0A07A701DFA537000734BC3 /* Explode.scnp */,
+				B0DE984A1DFD3F9D00BC6BDB /* Fire.scnp */,
+				B0698AB11DFD7E8E0031652F /* FireParticle.scnp */,
+				B0DE984B1DFD3F9D00BC6BDB /* spark.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		9C8CE5C62229F29300AAF47E /* BrickHelpers */ = {
+			isa = PBXGroup;
+			children = (
+				9C8CE5BF2229D78800AAF47E /* BrickWall.swift */,
+				9C8CE5C32229DAEA00AAF47E /* BrickBarrier.swift */,
+				9C8CE5C12229D7D500AAF47E /* Fireball.swift */,
+				B0A07A791DFA53BD00734BC3 /* MovingBarrier.swift */,
+			);
+			path = BrickHelpers;
+			sourceTree = "<group>";
+		};
+		9C8CE5C72229F2EE00AAF47E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B0A07A6C1DFA536200734BC3 /* SCNAction+Extensions.swift */,
+				B0A07A6D1DFA536200734BC3 /* SCNVector3+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		9C8CE5C82229F30D00AAF47E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				B0A07A711DFA537000734BC3 /* GameHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		9C8CE5C92229F31C00AAF47E /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				B0A07A7E1DFA546600734BC3 /* Main.storyboard */,
+				B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */,
+				B0A07A781DFA53BD00734BC3 /* GameViewController.swift */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 		B0A07A311DFA523600734BC3 = {
@@ -136,25 +187,14 @@
 		B0A07A3C1DFA523600734BC3 /* SpaceWallRunATV */ = {
 			isa = PBXGroup;
 			children = (
-				B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */,
+				9C8CE5C92229F31C00AAF47E /* Source */,
+				9C8CE5C82229F30D00AAF47E /* Helpers */,
+				9C8CE5C72229F2EE00AAF47E /* Extensions */,
+				9C8CE5C62229F29300AAF47E /* BrickHelpers */,
+				9C8CE5C52229F23200AAF47E /* Resources */,
+				B0A07A461DFA523600734BC3 /* Assets.xcassets */,
 				B0A07A6A1DFA534200734BC3 /* ship.scnassets */,
 				B0A07A3F1DFA523600734BC3 /* art.scnassets */,
-				B0A07A781DFA53BD00734BC3 /* GameViewController.swift */,
-				9C8CE5BF2229D78800AAF47E /* BrickWall.swift */,
-				9C8CE5C32229DAEA00AAF47E /* BrickBarrier.swift */,
-				9C8CE5C12229D7D500AAF47E /* Fireball.swift */,
-				B0A07A791DFA53BD00734BC3 /* MovingBarrier.swift */,
-				B0A07A6C1DFA536200734BC3 /* SCNAction+Extensions.swift */,
-				B0A07A6D1DFA536200734BC3 /* SCNVector3+Extensions.swift */,
-				B0A07A701DFA537000734BC3 /* Explode.scnp */,
-				B0DE984A1DFD3F9D00BC6BDB /* Fire.scnp */,
-				B0698AB11DFD7E8E0031652F /* FireParticle.scnp */,
-				B0DE984B1DFD3F9D00BC6BDB /* spark.png */,
-				B0A07A711DFA537000734BC3 /* GameHelper.swift */,
-				B0A07A721DFA537000734BC3 /* ExplodeGood.wav */,
-				9C8CE5B82229162400AAF47E /* Audio */,
-				B0A07A7E1DFA546600734BC3 /* Main.storyboard */,
-				B0A07A461DFA523600734BC3 /* Assets.xcassets */,
 				B0A07A481DFA523600734BC3 /* Info.plist */,
 			);
 			path = SpaceWallRunATV;
