@@ -106,7 +106,8 @@ class GameViewController: UIViewController {
     var game = GameHelper.sharedInstance
     var spriteScene: SKScene!
     var movingBarriers: MovingBarrier!
-    var movingBrickBarriers: BrickBarrier!
+//    var movingBrickBarriers: BrickBarrier!
+    var movingBrickBarriers: MovingBrickBarrier!
     var gameMode:GameModeType = .thru
     var pointTally = 0
     var unbreakableWalls = [SCNNode]()
@@ -324,15 +325,25 @@ class GameViewController: UIViewController {
         scnView.pointOfView = shipCameraNode
         
 //         setup moving barriers
+        setupMovingBarriers()
+        setupMovingBrickBarriers()
+
+        //        let brickBarrier = BrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), parentNode: scnScene.rootNode, forGameMode: .thru)
+        
+//        movingBrickBarriers = BrickBarrier(parentNode: scnScene.rootNode, baseBarrier: brickBarrier.barrier1)
+//        movingBrickBarriers.start()
+    }
+    
+    func setupMovingBarriers() {
         let barriers = scnScene.rootNode.childNode(withName:
             "Barriers", recursively: true)!
         movingBarriers = MovingBarrier(parentNode: scnScene.rootNode, baseBarrier: barriers)
         movingBarriers.start()
-
-        let brickBarrier = BrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), parentNode: scnScene.rootNode, forGameMode: .thru)
-        
-//        movingBrickBarriers = BrickBarrier(parentNode: scnScene.rootNode, baseBarrier: brickBarrier.barrier1)
-//        movingBrickBarriers.start()
+    }
+    
+    func setupMovingBrickBarriers() {
+        movingBrickBarriers = MovingBrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), parentNode: scnScene.rootNode)
+        movingBrickBarriers.start()
     }
     
     func addWall() {

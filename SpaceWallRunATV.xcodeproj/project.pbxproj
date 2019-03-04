@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C671227222CD1D300EA5C4F /* MovingBrickBarrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C671226222CD1D300EA5C4F /* MovingBrickBarrier.swift */; };
 		9C8CE5BA2229163E00AAF47E /* blaster.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9C8CE5B92229163E00AAF47E /* blaster.mp3 */; };
 		9C8CE5C02229D78800AAF47E /* BrickWall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5BF2229D78800AAF47E /* BrickWall.swift */; };
 		9C8CE5C22229D7D500AAF47E /* Fireball.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5C12229D7D500AAF47E /* Fireball.swift */; };
@@ -49,6 +50,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9C671226222CD1D300EA5C4F /* MovingBrickBarrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingBrickBarrier.swift; sourceTree = "<group>"; };
 		9C8CE5B92229163E00AAF47E /* blaster.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = blaster.mp3; sourceTree = "<group>"; };
 		9C8CE5BF2229D78800AAF47E /* BrickWall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickWall.swift; sourceTree = "<group>"; };
 		9C8CE5C12229D7D500AAF47E /* Fireball.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fireball.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				9C8CE5C32229DAEA00AAF47E /* BrickBarrier.swift */,
 				9C8CE5C12229D7D500AAF47E /* Fireball.swift */,
 				B0A07A791DFA53BD00734BC3 /* MovingBarrier.swift */,
+				9C671226222CD1D300EA5C4F /* MovingBrickBarrier.swift */,
 			);
 			path = BrickHelpers;
 			sourceTree = "<group>";
@@ -373,6 +376,7 @@
 				B0A07A751DFA537000734BC3 /* GameHelper.swift in Sources */,
 				B0A07A3E1DFA523600734BC3 /* AppDelegate.swift in Sources */,
 				B0A07A7B1DFA53BD00734BC3 /* MovingBarrier.swift in Sources */,
+				9C671227222CD1D300EA5C4F /* MovingBrickBarrier.swift in Sources */,
 				B0A07A6E1DFA536200734BC3 /* SCNAction+Extensions.swift in Sources */,
 				B0A07A6F1DFA536200734BC3 /* SCNVector3+Extensions.swift in Sources */,
 			);
