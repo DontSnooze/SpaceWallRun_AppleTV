@@ -38,6 +38,7 @@ class BrickWall: NSObject {
         }
         if forGameMode == .shootThru {
             GameViewController.replaceFourRandomBlocks(fromWall: node, gridWidth: 4, gridHeight: 8, with: .unbreakable)
+            
         }
         if forGameMode == .angleMove {
             let spins = [-2, -1, 1, 2]
@@ -141,6 +142,9 @@ class BrickWall: NSObject {
         }
         
         startBrickCount = node.childNodes.count
+        if gameMode == .shootThru {
+            startBrickCount -= 4
+        }
         startLocationTimers(for: node)
     }
     
