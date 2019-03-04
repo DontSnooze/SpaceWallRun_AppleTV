@@ -20,7 +20,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573432733.187883"
+            timestampString = "573434198.071712"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "511"
@@ -45,7 +45,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573432733.190578"
+            timestampString = "573434198.072289"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "511"
@@ -70,7 +70,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573432733.191739"
+            timestampString = "573434198.0724829"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "666"
@@ -96,12 +96,28 @@
             condition = "menuSwipeDown()"
             continueAfterRunningActions = "No"
             filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573432733.192782"
+            timestampString = "573434198.072642"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "678"
             endingLineNumber = "678"
             landmarkName = "menuSwipeDown()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SpaceWallRunATV/Source/GameViewController.swift"
+            timestampString = "573434198.072803"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "505"
+            endingLineNumber = "505"
+            landmarkName = "playPauseButtonPressed(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
