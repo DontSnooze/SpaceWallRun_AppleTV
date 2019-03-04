@@ -32,7 +32,7 @@ extension GameViewController: GameControllerHelperDelegate {
     }
     
     func controllerMoved(with displacement: float2) {
-        print("[at] \(#function)")
+//        print("[at] \(#function)")
         if scnScene.isPaused {
             if displacement.x == 0 && displacement.y == 0 {
                 return
@@ -51,6 +51,11 @@ extension GameViewController: GameControllerHelperDelegate {
     
     func controllerXPressed() {
         print("\(#function)")
+        // play/pause button on siri remote
+        if !scnScene.isPaused {
+            // special weapon
+        }
+        
     }
     
     func controllerAPressed() {
@@ -73,18 +78,7 @@ extension GameViewController: GameControllerHelperDelegate {
     }
     
     func controllerXReleased() {
-        print("\(#function)")
-        if scnScene.isPaused {
-            
-            if !gameStarted {
-                newGamePressed()
-            } else {
-                continuePressed()
-            }
-            
-        } else {
-            playPauseButtonPressed(UITapGestureRecognizer())
-        }
+//        print("\(#function)")
     }
     
     func shipNodeForControl() -> SCNNode {

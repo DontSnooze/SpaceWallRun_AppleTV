@@ -130,8 +130,7 @@ import GameController
         
         let movementHandler: GCControllerDirectionPadValueChangedHandler = {  _, xValue, yValue in
             let displacement = float2(x: xValue, y: yValue)
-            print("[at] displacement:\(displacement)")
-            
+            //print("[at] displacement:\(displacement)")
             self.delegate?.controllerMoved(with: displacement)
         }
         
@@ -169,8 +168,7 @@ import GameController
         
         let movementHandler: GCControllerDirectionPadValueChangedHandler = {  _, xValue, yValue in
             let displacement = float2(x: xValue, y: yValue)
-            print("[at] displacement:\(displacement)")
-            
+            //print("[at] displacement:\(displacement)")
             self.delegate?.controllerMoved(with: displacement)
         }
         
