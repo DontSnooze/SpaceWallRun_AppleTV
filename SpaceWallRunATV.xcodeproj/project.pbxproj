@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		9C3AA6C7222D6A4D00035895 /* GameConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3AA6C6222D6A4D00035895 /* GameConstants.swift */; };
+		9C3AA6C9222D8D0E00035895 /* GameControllerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3AA6C8222D8D0E00035895 /* GameControllerHelper.swift */; };
+		9C3AA6CB222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3AA6CA222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift */; };
+		9C3AA6CE222DD2A300035895 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C3AA6CD222DD2A300035895 /* GameController.framework */; };
 		9C671227222CD1D300EA5C4F /* MovingBrickBarrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C671226222CD1D300EA5C4F /* MovingBrickBarrier.swift */; };
 		9C8CE5BA2229163E00AAF47E /* blaster.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9C8CE5B92229163E00AAF47E /* blaster.mp3 */; };
 		9C8CE5C02229D78800AAF47E /* BrickWall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5BF2229D78800AAF47E /* BrickWall.swift */; };
@@ -52,6 +55,9 @@
 
 /* Begin PBXFileReference section */
 		9C3AA6C6222D6A4D00035895 /* GameConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameConstants.swift; sourceTree = "<group>"; };
+		9C3AA6C8222D8D0E00035895 /* GameControllerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerHelper.swift; sourceTree = "<group>"; };
+		9C3AA6CA222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+GameControllerHelperDelegate.swift"; sourceTree = "<group>"; };
+		9C3AA6CD222DD2A300035895 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		9C671226222CD1D300EA5C4F /* MovingBrickBarrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingBrickBarrier.swift; sourceTree = "<group>"; };
 		9C8CE5B92229163E00AAF47E /* blaster.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = blaster.mp3; sourceTree = "<group>"; };
 		9C8CE5BF2229D78800AAF47E /* BrickWall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickWall.swift; sourceTree = "<group>"; };
@@ -88,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C3AA6CE222DD2A300035895 /* GameController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,6 +115,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C3AA6CC222DD2A300035895 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9C3AA6CD222DD2A300035895 /* GameController.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9C8CE5B82229162400AAF47E /* Audio */ = {
 			isa = PBXGroup;
 			children = (
@@ -156,6 +171,7 @@
 			children = (
 				B0A07A711DFA537000734BC3 /* GameHelper.swift */,
 				9C3AA6C6222D6A4D00035895 /* GameConstants.swift */,
+				9C3AA6C8222D8D0E00035895 /* GameControllerHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -166,6 +182,7 @@
 				B0A07A7E1DFA546600734BC3 /* Main.storyboard */,
 				B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */,
 				B0A07A781DFA53BD00734BC3 /* GameViewController.swift */,
+				9C3AA6CA222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -177,6 +194,7 @@
 				B0A07A501DFA523700734BC3 /* SpaceWallRunATVTests */,
 				B0A07A5B1DFA523700734BC3 /* SpaceWallRunATVUITests */,
 				B0A07A3B1DFA523600734BC3 /* Products */,
+				9C3AA6CC222DD2A300035895 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -295,6 +313,11 @@
 						DevelopmentTeam = 3BT7A38RRX;
 						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.GameControllers.appletvos = {
+								enabled = 1;
+							};
+						};
 					};
 					B0A07A4C1DFA523700734BC3 = {
 						CreatedOnToolsVersion = 8.1;
@@ -373,12 +396,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C8CE5C02229D78800AAF47E /* BrickWall.swift in Sources */,
+				9C3AA6CB222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift in Sources */,
 				B0A07A7A1DFA53BD00734BC3 /* GameViewController.swift in Sources */,
 				9C8CE5C42229DAEA00AAF47E /* BrickBarrier.swift in Sources */,
 				9C8CE5C22229D7D500AAF47E /* Fireball.swift in Sources */,
 				B0A07A751DFA537000734BC3 /* GameHelper.swift in Sources */,
 				B0A07A3E1DFA523600734BC3 /* AppDelegate.swift in Sources */,
 				B0A07A7B1DFA53BD00734BC3 /* MovingBarrier.swift in Sources */,
+				9C3AA6C9222D8D0E00035895 /* GameControllerHelper.swift in Sources */,
 				9C3AA6C7222D6A4D00035895 /* GameConstants.swift in Sources */,
 				9C671227222CD1D300EA5C4F /* MovingBrickBarrier.swift in Sources */,
 				B0A07A6E1DFA536200734BC3 /* SCNAction+Extensions.swift in Sources */,
@@ -542,7 +567,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.2;
-				TVOS_DEPLOYMENT_TARGET = 10.0;
+				TVOS_DEPLOYMENT_TARGET = 12.1;
 			};
 			name = Debug;
 		};
@@ -558,7 +583,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.2;
-				TVOS_DEPLOYMENT_TARGET = 10.0;
+				TVOS_DEPLOYMENT_TARGET = 12.1;
 			};
 			name = Release;
 		};

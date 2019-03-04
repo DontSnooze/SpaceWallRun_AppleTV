@@ -9,6 +9,7 @@
 import UIKit
 import SceneKit
 import SpriteKit
+import GameController
 
 enum ColliderType: Int {
     case ship     = 0b0001
@@ -87,7 +88,7 @@ func randomSpinAxis() -> SpinAxis {
     return result
 }
 
-class GameViewController: UIViewController {
+class GameViewController: GCEventViewController {
 
     @IBOutlet weak var scnView: SCNView!
     @IBOutlet weak var hudLabel: UILabel!
@@ -121,6 +122,8 @@ class GameViewController: UIViewController {
     var selectedMenuArrayIndex = 0
     var gameLevel = GameLevel.two
     
+    let controllerHelper = GameControllerHelper()
+    
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
     
@@ -132,15 +135,13 @@ class GameViewController: UIViewController {
         spriteScene = SKScene(size: self.view.frame.size)
         scnView.overlaySKScene = self.spriteScene
         setupNodes()
-        //setupJoysticks()
         setupSounds()
         game.playSound(shipNode, name: "bgSong")
-        setupRemote()
+        controllerHelper.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.willRemoveUnbreakableWall(_:)), name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nil)
         setupMenu()
         scnScene.isPaused = true
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -190,136 +191,6 @@ class GameViewController: UIViewController {
         scnScene.rootNode.addChildNode(game.hudNode)
     }
     
-    func setupRemote() {
-//        let playPauseRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.playPauseButtonPressed(_:)))
-//        playPauseRecognizer.allowedPressTypes = [NSNumber(value: UIPress.PressType.playPause.rawValue)];
-//        self.view.addGestureRecognizer(playPauseRecognizer)
-        
-//        let shootRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.shootPressed(_:)))
-//        shootRecognizer.allowedPressTypes = [NSNumber(value: UIPressType.select.rawValue)];
-//        self.view.addGestureRecognizer(shootRecognizer)
-        
-//        let swipeUpRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(GameViewController.swipedUp(_:)))
-//        swipeUpRecognizer.direction = .up
-//        self.view.addGestureRecognizer(swipeUpRecognizer)
-//        
-//        let swipeDownRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(GameViewController.swipedDown(_:)))
-//        swipeDownRecognizer.direction = .down
-//        self.view.addGestureRecognizer(swipeDownRecognizer)
-//        
-//        let swipeLeftRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(GameViewController.swipedLeft(_:)))
-//        swipeLeftRecognizer.direction = .left
-//        self.view.addGestureRecognizer(swipeLeftRecognizer)
-//        
-//        let swipeRightRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(GameViewController.swipedRight(_:)))
-//        swipeRightRecognizer.direction = .right
-//        self.view.addGestureRecognizer(swipeRightRecognizer)
-//        
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(GameViewController.handlePan(_:)))
-        self.view.addGestureRecognizer(panGestureRecognizer)
-
-    }
-    /*.start
-    func setupJoysticks() {
-        
-        moveAnalogStick.position = CGPoint(x: moveAnalogStick.radius + 15, y: moveAnalogStick.radius + 15)
-        spriteScene.addChild(moveAnalogStick)
-        
-        rotateAnalogStick.position = CGPoint(x: self.view.frame.maxX - rotateAnalogStick.radius - 15, y:rotateAnalogStick.radius + 15)
-        spriteScene.addChild(rotateAnalogStick)
-        
-        //MARK: Handlers begin
-        
-        moveAnalogStick.startHandler = { [unowned self] in
-            
-//            guard let aN = self.shipNode else { return }
-//            aN.run(SKAction.sequence([SKAction.scale(to: 0.5, duration: 0.5), SKAction.scale(to: 1, duration: 0.5)]))
-        }
-        
-        moveAnalogStick.trackingHandler = { [unowned self] data in
-            
-            guard let aN = self.shipNode else { return }
-            
-            if abs(data.velocity.x) > 3 {
-                let multiplier = abs(data.velocity.x) / 540
-                if data.velocity.x > 0 {
-                    //subtract
-                    aN.position.x = aN.position.x - Float(multiplier)
-                    
-                } else {
-                    //add
-                    aN.position.x = aN.position.x + Float(multiplier)
-                }
-            }
-            var oldPos = aN.position.y
-            var yDifference:Float = 0
-            if abs(data.velocity.y) > 3 {
-                let multiplier = abs(data.velocity.y) / 540
-                
-                if data.velocity.y > 0 {
-                    //add
-                    yDifference = aN.position.y + Float(multiplier)
-                    
-                } else {
-                    //subtract
-                    yDifference = aN.position.y - Float(multiplier)
-                }
-                
-                aN.position.y = yDifference
-                //self.shipCameraNode.position.y = self.shipCameraNode.position.y + (yDifference)
-            }
-            
-            
-            
-            if aN.position.x > 7 {
-                aN.position.x = 7
-            }
-            if aN.position.x < 1 {
-                aN.position.x = 1
-            }
-            if aN.position.y > 7.5 {
-                aN.position.y = 7.5
-            }
-            if aN.position.y < 0.5 {
-                aN.position.y = 0.5
-            }
-            
-                // update camera view
-            
-            let scaledX = ((self.shipNode.position.x - 4) / 1.5) + 4
-                self.shipCameraNode.position.x = scaledX
-            let scaledY = ((self.shipNode.position.y - 3.75) / 1.5) + 3.75
-            self.shipCameraNode.position.y = scaledY
-                //self.shipCameraNode.position.x = self.shipNode.position.x / 1.5
-
-            
-            
-        }
-        
-        moveAnalogStick.stopHandler = { [unowned self] in
-            
-//            guard let aN = self.shipNode else { return }
-//            aN.run(SKAction.sequence([SKAction.scale(to: 1.5, duration: 0.5), SKAction.scale(to: 1, duration: 0.5)]))
-        }
-        
-        
-        
-        rotateAnalogStick.trackingHandler = { [unowned self] jData in
-            guard let aN = self.shipNode else { return }
-            if abs(jData.velocity.y) > 0 || abs(jData.velocity.x) > 0 {
-                aN.eulerAngles.z = Float(jData.angular) * -1
-            } else {
-                aN.eulerAngles.z = Float(0).degreesToRadians
-            }
-        }
-        
-        rotateAnalogStick.stopHandler =  { [unowned self] in
-            
-//            guard let aN = self.shipNode else { return }
-//            aN.run(SKAction.rotate(byAngle: 3.6, duration: 0.5))
-        }
-    }
- */
     func setupScene() {
         //scnView = self.view as! SCNView
         scnView.delegate = self
@@ -334,7 +205,6 @@ class GameViewController: UIViewController {
         menuArray = ["Continue", "Restart"]
         selectedMenuArrayIndex = 0
         highlightMenuItem(menuItemString: menuArray[0])
-        setupSwipeRecognizer()
         menuView.layer.cornerRadius = 10
         menuView.layer.borderColor = UIColor.white.cgColor
         menuView.layer.borderWidth = 1.0
@@ -346,11 +216,13 @@ class GameViewController: UIViewController {
     func showMenu() {
         menuView.isHidden = false;
         menuStackView.isHidden = false;
+        controllerUserInteractionEnabled = true
     }
     
     func hideMenu() {
         menuView.isHidden = true;
         menuStackView.isHidden = true;
+        controllerUserInteractionEnabled = false
     }
     
     func setupNodes() {
@@ -424,7 +296,9 @@ class GameViewController: UIViewController {
     }
     
     @objc func updateHud() {
-        self.hudLabel.text = game.labelNode.text
+        DispatchQueue.main.async {
+            self.hudLabel.text = self.game.labelNode.text
+        }
     }
     
     func updateShipCamera() {
@@ -524,7 +398,9 @@ class GameViewController: UIViewController {
         let transformMatrix =
             SCNMatrix4Mult(rotationMatrix, translationMatrix)
         // 4
-        scnScene.addParticleSystem(explosion, transform: transformMatrix)
+        DispatchQueue.main.async {
+            self.scnScene.addParticleSystem(explosion, transform: transformMatrix)
+        }
     }
     
     func shoot() {
@@ -564,8 +440,11 @@ class GameViewController: UIViewController {
         // 4
         leftFireball.node.addParticleSystem(fire)
         rightFireball.node.addParticleSystem(fire)
-        scnScene.rootNode.addChildNode(leftFireball.node)
-        scnScene.rootNode.addChildNode(rightFireball.node)
+        
+        DispatchQueue.main.async {
+            self.scnScene.rootNode.addChildNode(leftFireball.node)
+            self.scnScene.rootNode.addChildNode(rightFireball.node)
+        }
         
         game.playSound(scnScene.rootNode, name: "Blaster")
     }
@@ -618,24 +497,6 @@ class GameViewController: UIViewController {
         }
     }
     
-    /*
-    override var shouldAutorotate: Bool {
-        return true
-    }
-    
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .landscape
-        } else {
-            return .all
-        }
-    }
- */
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
@@ -647,69 +508,6 @@ class GameViewController: UIViewController {
             showMenu()
         }
         scnScene.isPaused = !scnScene.isPaused
-    }
-    
-    func togglePause() {
-        scnScene.isPaused = !scnScene.isPaused
-    }
-    
-    @IBAction func shootPressed(_ gestureRecognizer: UITapGestureRecognizer) {
-        //shoot()
-    }
-    
-    func setupSwipeRecognizer() {
-        
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
-        swipeUp.direction = UISwipeGestureRecognizer.Direction.up
-        self.view.addGestureRecognizer(swipeUp)
-        
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
-        swipeDown.direction = UISwipeGestureRecognizer.Direction.down
-        self.view.addGestureRecognizer(swipeDown)
-    }
-    
-    @objc func respondToSwipeGesture(_ gesture: UIGestureRecognizer) {
-        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            switch swipeGesture.direction {
-            case .right:
-                print("Swiped right")
-            case .down:
-                print("Swiped down")
-            case .left:
-                print("Swiped left")
-            case .up:
-                print("Swiped up")
-            default:
-                break
-            }
-        }
-    }
-    
-    @IBAction func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
-        if scnScene.isPaused {
-            switch gestureRecognizer.state {
-                
-            case .began,
-                 .changed:
-                print("ended")
-                let velocity = gestureRecognizer.velocity(in: self.view)
-                if velocity.y > 0 {
-                    handleMenuSwipe(direction: .up)
-                } else {
-                    handleMenuSwipe(direction: .down)
-                }
-                
-            default: break
-            }
-        } else {
-            if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
-                
-                let translation = gestureRecognizer.translation(in: self.view)
-                shipNode.position.x = shipNode.position.x - Float(translation.x / 1000)
-                shipNode.position.y = shipNode.position.y - Float(translation.y / 1000)
-                checkShipPosition()
-            }
-        }
     }
     
     func checkShipPosition() {
@@ -742,10 +540,10 @@ class GameViewController: UIViewController {
 
 extension GameViewController: SCNSceneRendererDelegate {
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        
-        game.updateHUD()
-    }
-    
+        DispatchQueue.main.async {
+            self.game.updateHUD()
+        }
+    }    
 }
 
 extension GameViewController: SCNPhysicsContactDelegate {
@@ -850,51 +648,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
 //        ballNode.physicsBody?.velocity.length = 5.0
     }
     
-    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if !scnScene.isPaused {
-            for item in presses {
-                switch item.type {
-                case .select:
-                    shoot()
-                default:
-                    break
-                }
-            }
-        }
-    }
-    
-    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if scnScene.isPaused {
-            for item in presses {
-                switch item.type {
-                case .playPause:
-                    if !gameStarted {
-                        newGamePressed()
-                    } else {
-                        continuePressed()
-                    }
-                case .select:
-                    if !gameStarted {
-                        newGamePressed()
-                    } else {
-                        menuItemSelected()
-                    }
-                default:
-                    break
-                }
-            }
-        } else {
-            for item in presses {
-                switch item.type {
-                case .playPause:
-                    playPauseButtonPressed(UITapGestureRecognizer())
-                default:
-                    break
-                }
-            }
-        }
-    }
-    
     func handleMenuSwipe(direction: UISwipeGestureRecognizer.Direction) {
         switch direction {
         case .up:
@@ -957,6 +710,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
             break
         }
     }
+    
+    
 }
 
 

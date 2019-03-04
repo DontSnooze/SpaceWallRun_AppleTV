@@ -25,125 +25,127 @@ import SceneKit
 import SpriteKit
 
 public enum GameStateType {
-  case Playing
-  case TapToPlay
-  case GameOver
+    case Playing
+    case TapToPlay
+    case GameOver
 }
 
 class GameHelper {
-  
-  var score:Int
-  var highScore:Int
-  var lastScore:Int
-  var lives:Int
-  var state = GameStateType.TapToPlay
+    
+    var score:Int
+    var highScore:Int
+    var lastScore:Int
+    var lives:Int
+    var state = GameStateType.TapToPlay
     var extraLifeScore:Int = 1000
-  
-  var hudNode:SCNNode!
-  var labelNode:SKLabelNode!
-  
-  
-  static let sharedInstance = GameHelper()
-  
-  var sounds:[String:SCNAudioSource] = [:]
-  
-  private init() {
-    score = 0
-    lastScore = 0
-    highScore = 0
-    lives = 10
-    let defaults = UserDefaults.standard
-    score = defaults.integer(forKey: "lastScore")
-    score = 0
-    highScore = defaults.integer(forKey: "highScore")
     
-    initHUD()
-  }
-  
-  func saveState() {
+    var hudNode:SCNNode!
+    var labelNode:SKLabelNode!
     
-    lastScore = score
-    highScore = max(score, highScore)
-    let defaults = UserDefaults.standard
-    defaults.set(0, forKey: "lastScore")
-    defaults.set(highScore, forKey: "highScore")
     
-    if score > extraLifeScore {
-        extraLifeScore += 1000
-        lives += 1
+    static let sharedInstance = GameHelper()
+    
+    var sounds:[String:SCNAudioSource] = [:]
+    
+    private init() {
+        score = 0
+        lastScore = 0
+        highScore = 0
+        lives = 10
+        let defaults = UserDefaults.standard
+        score = defaults.integer(forKey: "lastScore")
+        score = 0
+        highScore = defaults.integer(forKey: "highScore")
+        
+        initHUD()
     }
-    if lives < 0 {
-        reset()
+    
+    func saveState() {
+        
+        lastScore = score
+        highScore = max(score, highScore)
+        let defaults = UserDefaults.standard
+        defaults.set(0, forKey: "lastScore")
+        defaults.set(highScore, forKey: "highScore")
+        
+        if score > extraLifeScore {
+            extraLifeScore += 1000
+            lives += 1
+        }
+        if lives < 0 {
+            reset()
+        }
     }
-  }
-  
-  func getScoreString(_ length:Int) -> String {
-    return String(format: "%0\(length)d", score)
-  }
-  
-  func initHUD() {
     
-    let skScene = SKScene(size: CGSize(width: 500, height: 100))
-    skScene.backgroundColor = UIColor(white: 0.0, alpha: 0.0)
+    func getScoreString(_ length:Int) -> String {
+        return String(format: "%0\(length)d", score)
+    }
     
-    labelNode = SKLabelNode(fontNamed: "Menlo-Bold")
-    labelNode.fontSize = 24
-    labelNode.position.y = 50
-    labelNode.position.x = 250
+    func initHUD() {
+        
+        let skScene = SKScene(size: CGSize(width: 500, height: 100))
+        skScene.backgroundColor = UIColor(white: 0.0, alpha: 0.0)
+        
+        labelNode = SKLabelNode(fontNamed: "Menlo-Bold")
+        labelNode.fontSize = 24
+        labelNode.position.y = 50
+        labelNode.position.x = 250
+        
+        skScene.addChild(labelNode)
+        
+        let plane = SCNPlane(width: 5, height: 1)
+        let material = SCNMaterial()
+        material.lightingModel = SCNMaterial.LightingModel.constant
+        material.isDoubleSided = true
+        material.diffuse.contents = skScene
+        plane.materials = [material]
+        
+        hudNode = SCNNode(geometry: plane)
+        hudNode.name = "HUD"
+        hudNode.rotation = SCNVector4(x: 1, y: 0, z: 0, w: 3.14159265)
+        
+        
+    }
     
-    skScene.addChild(labelNode)
+    func updateHUD() {
+        let scoreFormatted = String(format: "%0\(4)d", score)
+        let highScoreFormatted = String(format: "%0\(4)d", highScore)
+        DispatchQueue.main.async {
+            self.labelNode.text = "❤️\(self.lives)  😎\(highScoreFormatted) 💥\(scoreFormatted)"
+        }
+    }
     
-    let plane = SCNPlane(width: 5, height: 1)
-    let material = SCNMaterial()
-    material.lightingModel = SCNMaterial.LightingModel.constant
-    material.isDoubleSided = true
-    material.diffuse.contents = skScene
-    plane.materials = [material]
-    
-    hudNode = SCNNode(geometry: plane)
-    hudNode.name = "HUD"
-    hudNode.rotation = SCNVector4(x: 1, y: 0, z: 0, w: 3.14159265)
-    
-    
-  }
-  
-  func updateHUD() {
-    let scoreFormatted = String(format: "%0\(4)d", score)
-    let highScoreFormatted = String(format: "%0\(4)d", highScore)
-    labelNode.text = "❤️\(lives)  😎\(highScoreFormatted) 💥\(scoreFormatted)"
-  }
-  
     func loadSound(_ name:String, fileNamed:String, loops:Bool) {
-    if let sound = SCNAudioSource(fileNamed: fileNamed) {
-        sound.loops = loops
-      sound.load()
-      sounds[name] = sound
+        if let sound = SCNAudioSource(fileNamed: fileNamed) {
+            sound.loops = loops
+            sound.load()
+            sounds[name] = sound
+        }
     }
-  }
-  
-  func playSound(_ node:SCNNode, name:String) {
-    let sound = sounds[name]
-    #if !targetEnvironment(simulator)
-    node.runAction(SCNAction.playAudio(sound!, waitForCompletion: false))
-    #endif
-  }
-  
-  func reset() {
-    score = 0
-    lives = 10
-    extraLifeScore = 1000
-  }
-  
-  func shakeNode(_ node:SCNNode) {
-    let left = SCNAction.move(by: SCNVector3(x: -0.2, y: 0.0, z: 0.0), duration: 0.05)
-    let right = SCNAction.move(by: SCNVector3(x: 0.2, y: 0.0, z: 0.0), duration: 0.05)
-    let up = SCNAction.move(by: SCNVector3(x: 0.0, y: 0.2, z: 0.0), duration: 0.05)
-    let down = SCNAction.move(by: SCNVector3(x: 0.0, y: -0.2, z: 0.0), duration: 0.05)
     
-    node.runAction(SCNAction.sequence([
-      left, up, down, right, left, right, down, up, right, down, left, up,
-      left, up, down, right, left, right, down, up, right, down, left, up]))
-  }
-  
-  
+    func playSound(_ node:SCNNode, name:String) {
+        let sound = sounds[name]
+        #if !targetEnvironment(simulator)
+        node.runAction(SCNAction.playAudio(sound!, waitForCompletion: false))
+        #endif
+    }
+    
+    func reset() {
+        score = 0
+        lives = 10
+        extraLifeScore = 1000
+    }
+    
+    func shakeNode(_ node:SCNNode) {
+        let left = SCNAction.move(by: SCNVector3(x: -0.2, y: 0.0, z: 0.0), duration: 0.05)
+        let right = SCNAction.move(by: SCNVector3(x: 0.2, y: 0.0, z: 0.0), duration: 0.05)
+        let up = SCNAction.move(by: SCNVector3(x: 0.0, y: 0.2, z: 0.0), duration: 0.05)
+        let down = SCNAction.move(by: SCNVector3(x: 0.0, y: -0.2, z: 0.0), duration: 0.05)
+        
+        DispatchQueue.main.async {
+            node.runAction(SCNAction.sequence([
+                left, up, down, right, left, right, down, up, right, down, left, up,
+                left, up, down, right, left, right, down, up, right, down, left, up]))
+        }
+    }
 }
