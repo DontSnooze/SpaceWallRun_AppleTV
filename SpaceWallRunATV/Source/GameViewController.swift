@@ -590,6 +590,9 @@ class GameViewController: UIViewController {
         selectedMenuArrayIndex = 0
         updateHud()
         highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
+        if scnScene.isPaused {
+            playPauseButtonPressed(UITapGestureRecognizer())
+        }
     }
     
     func continuePressed() {
