@@ -71,7 +71,9 @@ class BrickBarrier: NSObject {
     func startLocationTimers(for node: SCNNode) {
         let delay = SCNAction.wait(duration: 0.1)
         let action = SCNAction.run { _ in
-            self.checkLocation()
+            DispatchQueue.main.async {
+                self.checkLocation()
+            }
         }
         let actionSequence = SCNAction.sequence([delay, action])
         let repeatForeverAction = SCNAction.repeatForever(actionSequence)

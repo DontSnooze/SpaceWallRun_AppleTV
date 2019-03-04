@@ -30,20 +30,57 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view alpha="0.75" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MM0-Hn-LM6">
+                                <rect key="frame" x="660" y="340" width="600" height="400"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="600" id="GyF-Fe-2d8"/>
+                                    <constraint firstAttribute="height" constant="400" id="mdX-kl-Hh4"/>
+                                </constraints>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="mrl-6d-1vp">
+                                <rect key="frame" x="791" y="390" width="338" height="300"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Continue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wn3-zc-5Wb">
+                                        <rect key="frame" x="0.0" y="0.0" width="338" height="150"/>
+                                        <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="70"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Restart" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBi-rU-Gux">
+                                        <rect key="frame" x="0.0" y="150" width="338" height="150"/>
+                                        <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="70"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="300" id="bd1-CC-uYW"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="7O3-VI-buQ" secondAttribute="trailing" constant="20" id="1SU-Yu-D5i"/>
+                            <constraint firstItem="mrl-6d-1vp" firstAttribute="centerY" secondItem="Zp6-j4-CNM" secondAttribute="centerY" id="3uU-EB-NdV"/>
+                            <constraint firstItem="MM0-Hn-LM6" firstAttribute="centerX" secondItem="Zp6-j4-CNM" secondAttribute="centerX" id="4Xb-0Z-PBc"/>
+                            <constraint firstItem="mrl-6d-1vp" firstAttribute="centerX" secondItem="Zp6-j4-CNM" secondAttribute="centerX" id="AgA-Oo-kYy"/>
                             <constraint firstItem="7O3-VI-buQ" firstAttribute="top" secondItem="Zp6-j4-CNM" secondAttribute="top" constant="20" id="fTe-r0-I3t"/>
                             <constraint firstItem="6Un-8E-G68" firstAttribute="leading" secondItem="Zp6-j4-CNM" secondAttribute="leading" id="rHS-uC-sha"/>
                             <constraint firstAttribute="bottom" secondItem="6Un-8E-G68" secondAttribute="bottom" id="t6y-bh-RtP"/>
                             <constraint firstItem="6Un-8E-G68" firstAttribute="top" secondItem="Zp6-j4-CNM" secondAttribute="top" id="uSI-wv-XnE"/>
                             <constraint firstAttribute="trailing" secondItem="6Un-8E-G68" secondAttribute="trailing" id="uhb-aW-NL9"/>
+                            <constraint firstItem="MM0-Hn-LM6" firstAttribute="centerY" secondItem="Zp6-j4-CNM" secondAttribute="centerY" id="vhq-A5-8Nc"/>
                             <constraint firstItem="7O3-VI-buQ" firstAttribute="leading" secondItem="Zp6-j4-CNM" secondAttribute="leading" constant="20" id="wo3-QP-EXa"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="continueLabel" destination="wn3-zc-5Wb" id="ayL-bt-yXf"/>
                         <outlet property="hudLabel" destination="7O3-VI-buQ" id="1ZH-mg-ENE"/>
+                        <outlet property="menuStackView" destination="mrl-6d-1vp" id="XzZ-VK-HTp"/>
+                        <outlet property="menuView" destination="MM0-Hn-LM6" id="qdD-Ul-zKx"/>
+                        <outlet property="restartLabel" destination="mBi-rU-Gux" id="p0O-iD-cKA"/>
                         <outlet property="scnView" destination="6Un-8E-G68" id="6Eo-Pb-FYQ"/>
                     </connections>
                 </viewController>

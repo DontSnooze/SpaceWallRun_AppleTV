@@ -38,7 +38,9 @@ class Fireball: NSObject {
     func startLocationTimers(for node: SCNNode) {
         let delay = SCNAction.wait(duration: 0.5)
         let action = SCNAction.run { _ in
-            self.checkLocation()
+            DispatchQueue.main.async {
+                self.checkLocation()
+            }
         }
         let actionSequence = SCNAction.sequence([delay, action])
         let repeatForeverAction = SCNAction.repeatForever(actionSequence)
@@ -48,7 +50,7 @@ class Fireball: NSObject {
     func checkLocation() {
         
         if node.position.z > 30 {
-            node.removeFromParentNode()            
+            node.removeFromParentNode()
         }
     }
     

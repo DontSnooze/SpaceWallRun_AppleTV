@@ -91,6 +91,10 @@ class GameViewController: UIViewController {
 
     @IBOutlet weak var scnView: SCNView!
     @IBOutlet weak var hudLabel: UILabel!
+    @IBOutlet weak var continueLabel: UILabel!
+    @IBOutlet weak var restartLabel: UILabel!
+    @IBOutlet weak var menuStackView: UIStackView!
+    @IBOutlet weak var menuView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
     var scnScene: SCNScene!
     var shipNode: SCNNode!
@@ -112,6 +116,7 @@ class GameViewController: UIViewController {
     
     var wallTimerKey = "WallTimerKey"
     var hudTimerKey = "HudTimerKey"
+    var gameStarted = false
     
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
@@ -130,19 +135,24 @@ class GameViewController: UIViewController {
         setupRemote()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.willRemoveUnbreakableWall(_:)), name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nil)
-
+        setupMenu()
+        scnScene.isPaused = true
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
         startWallTimers()
         startHudTimers()
+        
+        showMenu()
     }
     
     func startWallTimers() {
         let delay = SCNAction.wait(duration: 3.0)
         let addWallAction = SCNAction.run { _ in
-            self.addWall()
+            DispatchQueue.main.async {
+                self.addWall()
+            }
         }
         let sequence = SCNAction.sequence([delay, addWallAction])
         let repeatForever = SCNAction.repeatForever(sequence)
@@ -152,7 +162,9 @@ class GameViewController: UIViewController {
     func startHudTimers() {
         let delay = SCNAction.wait(duration: 3.0)
         let action = SCNAction.run { _ in
-            self.updateHud()
+            DispatchQueue.main.async {
+                self.updateHud()
+            }
         }
         let actionSequence = SCNAction.sequence([delay, action])
         let repeatForeverAction = SCNAction.repeatForever(actionSequence)
@@ -176,9 +188,9 @@ class GameViewController: UIViewController {
     }
     
     func setupRemote() {
-        let playPauseRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.playPauseButtonPressed(_:)))
-        playPauseRecognizer.allowedPressTypes = [NSNumber(value: UIPress.PressType.playPause.rawValue)];
-        self.view.addGestureRecognizer(playPauseRecognizer)
+//        let playPauseRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.playPauseButtonPressed(_:)))
+//        playPauseRecognizer.allowedPressTypes = [NSNumber(value: UIPress.PressType.playPause.rawValue)];
+//        self.view.addGestureRecognizer(playPauseRecognizer)
         
 //        let shootRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.shootPressed(_:)))
 //        shootRecognizer.allowedPressTypes = [NSNumber(value: UIPressType.select.rawValue)];
@@ -313,6 +325,26 @@ class GameViewController: UIViewController {
         scnView.scene = scnScene
         scnScene.physicsWorld.contactDelegate = self
         scnView.backgroundColor = UIColor.black
+    }
+    
+    func setupMenu() {
+        setupSwipeRecognizer()
+        menuView.layer.cornerRadius = 10
+        menuView.layer.borderColor = UIColor.white.cgColor
+        menuView.layer.borderWidth = 1.0
+        menuView.clipsToBounds = true
+        continueLabel.text = "New Game"
+        restartLabel.text = ""
+    }
+    
+    func showMenu() {
+        menuView.isHidden = false;
+        menuStackView.isHidden = false;
+    }
+    
+    func hideMenu() {
+        menuView.isHidden = true;
+        menuStackView.isHidden = true;
     }
     
     func setupNodes() {
@@ -490,6 +522,11 @@ class GameViewController: UIViewController {
     }
     
     func shoot() {
+        
+        if scnScene.isPaused {
+            return
+        }
+        
         var leftPosition = shipNode.position
         leftPosition.x += 0.5
         let leftFireball = Fireball(position: leftPosition)
@@ -526,6 +563,28 @@ class GameViewController: UIViewController {
         
         game.playSound(scnScene.rootNode, name: "Blaster")
     }
+    
+    func newGamePressed() {
+        gameStarted = true
+        if scnScene.isPaused {
+            playPauseButtonPressed(UITapGestureRecognizer())
+        }
+        
+        hideMenu()
+        continueLabel.text = "Continue"
+        restartLabel.text = "Restart"
+    }
+    
+    func restartPressed() {
+        game.reset()
+    }
+    
+    func continuePressed() {
+        if scnScene.isPaused {
+            playPauseButtonPressed(UITapGestureRecognizer())
+        }
+    }
+    
     /*
     override var shouldAutorotate: Bool {
         return true
@@ -549,13 +608,54 @@ class GameViewController: UIViewController {
         // Release any cached data, images, etc that aren't in use.
     }
     @IBAction func playPauseButtonPressed(_ gestureRecognizer: UITapGestureRecognizer) {
+        if scnScene.isPaused {
+            hideMenu()
+        } else {
+            showMenu()
+        }
         scnScene.isPaused = !scnScene.isPaused
     }
+    
+    func togglePause() {
+        scnScene.isPaused = !scnScene.isPaused
+    }
+    
     @IBAction func shootPressed(_ gestureRecognizer: UITapGestureRecognizer) {
         //shoot()
     }
     
+    func setupSwipeRecognizer() {
+        
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
+        swipeUp.direction = UISwipeGestureRecognizer.Direction.up
+        self.view.addGestureRecognizer(swipeUp)
+        
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
+        swipeDown.direction = UISwipeGestureRecognizer.Direction.down
+        self.view.addGestureRecognizer(swipeDown)
+    }
+    
+    @objc func respondToSwipeGesture(_ gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case .right:
+                print("Swiped right")
+            case .down:
+                print("Swiped down")
+            case .left:
+                print("Swiped left")
+            case .up:
+                print("Swiped up")
+            default:
+                break
+            }
+        }
+    }
+    
     @IBAction func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
+        if scnScene.isPaused {
+            return
+        }
         if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
             
             let translation = gestureRecognizer.translation(in: self.view)
@@ -700,9 +800,46 @@ extension GameViewController: SCNPhysicsContactDelegate {
     }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        for item in presses {
-            if item.type == .select {
-                shoot()
+        if !scnScene.isPaused {
+            for item in presses {
+                switch item.type {
+                case .select:
+                    shoot()
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        if scnScene.isPaused {
+            for item in presses {
+                switch item.type {
+                case .playPause:
+                    if !gameStarted {
+                        newGamePressed()
+                    } else {
+                        continuePressed()
+                    }
+                case .select:
+                    if !gameStarted {
+                        newGamePressed()
+                    } else {
+                        continuePressed()
+                    }
+                default:
+                    break
+                }
+            }
+        } else {
+            for item in presses {
+                switch item.type {
+                case .playPause:
+                    playPauseButtonPressed(UITapGestureRecognizer())
+                default:
+                    break
+                }
             }
         }
     }
