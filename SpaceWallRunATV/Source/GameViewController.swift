@@ -119,6 +119,7 @@ class GameViewController: UIViewController {
     var gameStarted = false
     var menuArray = [String]()
     var selectedMenuArrayIndex = 0
+    var gameLevel = GameLevel.two
     
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
@@ -162,7 +163,7 @@ class GameViewController: UIViewController {
     }
     
     func startHudTimers() {
-        let delay = SCNAction.wait(duration: 3.0)
+        let delay = SCNAction.wait(duration: 0.5)
         let action = SCNAction.run { _ in
             DispatchQueue.main.async {
                 self.updateHud()
@@ -803,6 +804,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 createExplosion(geometry: contactNode.geometry!,
                                 position: position,
                                 rotation: contactNode.presentation.rotation)
+                game.score += brickPoint(for: gameLevel)
+                updateHud()
             }
             
             if wasShot {
@@ -813,6 +816,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 game.playSound(scnScene.rootNode, name: "Brick")
                 game.shakeNode(shipNode)
                 game.lives -= 1
+                game.score += brickPoint(for: gameLevel)
+                updateHud()
                 
             }
             
@@ -902,6 +907,9 @@ extension GameViewController: SCNPhysicsContactDelegate {
     }
     
     func menuSwipeUp() {
+        if !gameStarted {
+            return
+        }
         if selectedMenuArrayIndex < menuArray.count - 1 {
             selectedMenuArrayIndex += 1
         }
@@ -911,6 +919,9 @@ extension GameViewController: SCNPhysicsContactDelegate {
     }
     
     func menuSwipeDown() {
+        if !gameStarted {
+            return
+        }
         if selectedMenuArrayIndex > 0 {
             selectedMenuArrayIndex -= 1
         }

@@ -183,19 +183,15 @@ class BrickWall: NSObject {
         if node.position.z < 1 && !gotWallScore {
             gotWallScore = true
             endBrickCount = node.childNodes.count
-            if startBrickCount - endBrickCount == 0 {
-                if gameMode == .thru {
-                    wallScore += 20
-                }
-            } else {
-                if gameMode == .thru {
-                    wallScore = endBrickCount - startBrickCount
-                } else {
-                    wallScore =  startBrickCount - endBrickCount
-                }
-            }
+            
             if node.name == "UnbreakableWall" {
                 let nodeDict:[String: SCNNode] = ["node": node]
+                
+                if startBrickCount - endBrickCount == 0 {
+                    if gameMode == .thru {
+                        wallScore += UnbreakableWallPoint.level2.rawValue
+                    }
+                }
                 
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nodeDict)
             }
