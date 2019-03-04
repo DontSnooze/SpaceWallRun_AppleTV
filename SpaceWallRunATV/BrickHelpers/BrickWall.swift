@@ -13,12 +13,12 @@ class BrickWall: NSObject {
     var startBrickCount:Int = 0
     var endBrickCount:Int = 0
     var wallScore:Int = 0
-    var timer = Timer()
     var node:SCNNode!
     var gotWallScore = false
     var pointsPerWall = 4
     var gameMode: GameModeType = .thru
     var hasStartedFullMove = false;
+    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, forGameMode: GameModeType) {
         
@@ -141,11 +141,19 @@ class BrickWall: NSObject {
         }
         
         startBrickCount = node.childNodes.count
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+        startLocationTimers(for: node)
+    }
+    
+    func startLocationTimers(for node: SCNNode) {
+        let delay = SCNAction.wait(duration: 0.1)
+        let action = SCNAction.run { _ in
             DispatchQueue.main.async {
                 self.checkLocation()
             }
         }
+        let actionSequence = SCNAction.sequence([delay, action])
+        let repeatForeverAction = SCNAction.repeatForever(actionSequence)
+        node.runAction(repeatForeverAction, forKey: locationTimerKey)
     }
     
     @objc func checkLocation() {
@@ -175,28 +183,21 @@ class BrickWall: NSObject {
         if node.position.z < 1 && !gotWallScore {
             gotWallScore = true
             endBrickCount = node.childNodes.count
-            if startBrickCount - endBrickCount == 0 {
-                if gameMode == .thru {
-                    wallScore += 20
-                }
-            } else {
-                if gameMode == .thru {
-                    wallScore = endBrickCount - startBrickCount
-                } else {
-                    wallScore =  startBrickCount - endBrickCount
-                }
-            }
+            
             if node.name == "UnbreakableWall" {
                 let nodeDict:[String: SCNNode] = ["node": node]
+                
+                if startBrickCount - endBrickCount == 0 {
+                    if gameMode == .thru {
+                        wallScore += UnbreakableWallPoint.level2.rawValue
+                    }
+                }
                 
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nodeDict)
             }
             GameHelper.sharedInstance.score += wallScore
             GameHelper.sharedInstance.saveState()
             node.removeFromParentNode()
-            timer.invalidate()
-            
-            
         }
     }
     

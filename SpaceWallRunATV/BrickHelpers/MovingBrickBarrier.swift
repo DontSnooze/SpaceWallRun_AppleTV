@@ -1,5 +1,5 @@
 //
-//  MovingBarrier.swift
+//  MovingBrickBarrier.swift
 //  SpaceWallRun
 //
 //  Created by Amos Todman on 12/5/16.
@@ -9,22 +9,22 @@
 import UIKit
 import SceneKit
 
-class MovingBarrier: NSObject {
+class MovingBrickBarrier: NSObject {
     
-    var timer = Timer()
     var barrier1:SCNNode!
     var barrier2: SCNNode!
     var startingPosition: SCNVector3!
     var currentBarrier: SCNNode!
+    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, parentNode: SCNNode) {
         
         super.init()
-        let wallScene = SCNScene(named: "art.scnassets/WallScene.scn")
+        let wallScene = SCNScene(named: "art.scnassets/BrickBarrierScene.scn")
         barrier1 = wallScene?.rootNode.childNode(withName:
-            "Barriers", recursively: true)!.clone()
+            "BrickBarriers", recursively: true)!.clone()
         barrier2 = wallScene?.rootNode.childNode(withName:
-            "Barriers", recursively: true)!.clone()
+            "BrickBarriers", recursively: true)!.clone()
         
         startingPosition = position
         barrier1.position = position
@@ -36,12 +36,14 @@ class MovingBarrier: NSObject {
         parentNode.addChildNode(barrier1)
         parentNode.addChildNode(barrier2)
         
+        barrier1.runAction(SCNAction.repeatForever(SCNAction.moveBy(x: 0, y: 0, z: -20, duration: 1)))
+        barrier2.runAction(SCNAction.repeatForever(SCNAction.moveBy(x: 0, y: 0, z: -20, duration: 1)))
     }
     
     init(parentNode: SCNNode, baseBarrier: SCNNode) {
         
         super.init()
-        _ = SCNScene(named: "art.scnassets/WallScene.scn")
+        _ = SCNScene(named: "art.scnassets/BrickBarrierScene.scn")
         barrier1 = baseBarrier
         barrier2 = barrier1.clone()
         
@@ -53,20 +55,32 @@ class MovingBarrier: NSObject {
         
         
         currentBarrier = barrier1
-//        parentNode.addChildNode(barrier1)
+        //        parentNode.addChildNode(barrier1)
         
         parentNode.addChildNode(barrier2)
         barrier1.runAction(SCNAction.repeatForever(SCNAction.moveBy(x: 0, y: 0, z: -20, duration: 1)))
         barrier2.runAction(SCNAction.repeatForever(SCNAction.moveBy(x: 0, y: 0, z: -20, duration: 1)))
         
-//        barrier1.isHidden = true
-//        barrier2.isHidden = true
+        //        barrier1.isHidden = true
+        //        barrier2.isHidden = true
         
+    }
+    
+    func startLocationTimers(for node: SCNNode) {
+        let delay = SCNAction.wait(duration: 0.1)
+        let action = SCNAction.run { _ in
+            DispatchQueue.main.async {
+                self.checkLocation()
+            }
+        }
+        let actionSequence = SCNAction.sequence([delay, action])
+        let repeatForeverAction = SCNAction.repeatForever(actionSequence)
+        node.runAction(repeatForeverAction, forKey: locationTimerKey)
     }
     
     func checkLocation() {
         if currentBarrier.position.z < -20 {
-            timer.invalidate()
+            currentBarrier.removeAction(forKey: locationTimerKey)
             // add the other barrier to the end
             currentBarrier = barrier1 == currentBarrier ? barrier2 : barrier1
             
@@ -82,14 +96,7 @@ class MovingBarrier: NSObject {
     }
     
     func start() {
-        //currentBarrier.runAction(SCNAction.moveBy(x: 0, y: 0, z: -500, duration: 30.0))
-//        SCNAction repeat
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.checkLocation()
-            }
-        }
-        
+        startLocationTimers(for: currentBarrier)
     }
     
     

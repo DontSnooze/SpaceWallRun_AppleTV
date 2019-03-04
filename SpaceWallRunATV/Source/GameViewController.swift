@@ -91,6 +91,10 @@ class GameViewController: UIViewController {
 
     @IBOutlet weak var scnView: SCNView!
     @IBOutlet weak var hudLabel: UILabel!
+    @IBOutlet weak var continueLabel: UILabel!
+    @IBOutlet weak var restartLabel: UILabel!
+    @IBOutlet weak var menuStackView: UIStackView!
+    @IBOutlet weak var menuView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
     var scnScene: SCNScene!
     var shipNode: SCNNode!
@@ -101,21 +105,28 @@ class GameViewController: UIViewController {
     var shipY: Float = 0
     var floorNode: SCNNode!
     var shipCameraNode: SCNNode!
-    var timer = Timer()
-    var hudTimer = Timer()
     var game = GameHelper.sharedInstance
     var spriteScene: SKScene!
     var movingBarriers: MovingBarrier!
+//    var movingBrickBarriers: BrickBarrier!
+    var movingBrickBarriers: MovingBrickBarrier!
     var gameMode:GameModeType = .thru
     var pointTally = 0
     var unbreakableWalls = [SCNNode]()
+    
+    var wallTimerKey = "WallTimerKey"
+    var hudTimerKey = "HudTimerKey"
+    var gameStarted = false
+    var menuArray = [String]()
+    var selectedMenuArrayIndex = 0
+    var gameLevel = GameLevel.two
     
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupScene()
         
         spriteScene = SKScene(size: self.view.frame.size)
@@ -127,22 +138,40 @@ class GameViewController: UIViewController {
         setupRemote()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.willRemoveUnbreakableWall(_:)), name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nil)
-
+        setupMenu()
+        scnScene.isPaused = true
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+        startWallTimers()
+        startHudTimers()
+        
+        showMenu()
+    }
+    
+    func startWallTimers() {
+        let delay = SCNAction.wait(duration: 3.0)
+        let addWallAction = SCNAction.run { _ in
             DispatchQueue.main.async {
                 self.addWall()
             }
         }
-        
-        hudTimer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { _ in
+        let sequence = SCNAction.sequence([delay, addWallAction])
+        let repeatForever = SCNAction.repeatForever(sequence)
+        scnScene.rootNode.runAction(repeatForever, forKey: wallTimerKey)
+    }
+    
+    func startHudTimers() {
+        let delay = SCNAction.wait(duration: 0.5)
+        let action = SCNAction.run { _ in
             DispatchQueue.main.async {
                 self.updateHud()
             }
         }
+        let actionSequence = SCNAction.sequence([delay, action])
+        let repeatForeverAction = SCNAction.repeatForever(actionSequence)
+        scnScene.rootNode.runAction(repeatForeverAction, forKey: hudTimerKey)
     }
     
     func setupSounds() {
@@ -162,9 +191,9 @@ class GameViewController: UIViewController {
     }
     
     func setupRemote() {
-        let playPauseRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.playPauseButtonPressed(_:)))
-        playPauseRecognizer.allowedPressTypes = [NSNumber(value: UIPress.PressType.playPause.rawValue)];
-        self.view.addGestureRecognizer(playPauseRecognizer)
+//        let playPauseRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.playPauseButtonPressed(_:)))
+//        playPauseRecognizer.allowedPressTypes = [NSNumber(value: UIPress.PressType.playPause.rawValue)];
+//        self.view.addGestureRecognizer(playPauseRecognizer)
         
 //        let shootRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameViewController.shootPressed(_:)))
 //        shootRecognizer.allowedPressTypes = [NSNumber(value: UIPressType.select.rawValue)];
@@ -190,7 +219,7 @@ class GameViewController: UIViewController {
         self.view.addGestureRecognizer(panGestureRecognizer)
 
     }
-    /*
+    /*.start
     func setupJoysticks() {
         
         moveAnalogStick.position = CGPoint(x: moveAnalogStick.radius + 15, y: moveAnalogStick.radius + 15)
@@ -301,6 +330,29 @@ class GameViewController: UIViewController {
         scnView.backgroundColor = UIColor.black
     }
     
+    func setupMenu() {
+        menuArray = ["Continue", "Restart"]
+        selectedMenuArrayIndex = 0
+        highlightMenuItem(menuItemString: menuArray[0])
+        setupSwipeRecognizer()
+        menuView.layer.cornerRadius = 10
+        menuView.layer.borderColor = UIColor.white.cgColor
+        menuView.layer.borderWidth = 1.0
+        menuView.clipsToBounds = true
+        continueLabel.text = "New Game"
+        restartLabel.text = ""
+    }
+    
+    func showMenu() {
+        menuView.isHidden = false;
+        menuStackView.isHidden = false;
+    }
+    
+    func hideMenu() {
+        menuView.isHidden = true;
+        menuStackView.isHidden = true;
+    }
+    
     func setupNodes() {
         shipCameraNode = scnScene.rootNode.childNode(withName:
             "ShipCamera", recursively: true)!
@@ -322,14 +374,29 @@ class GameViewController: UIViewController {
                                         recursively: true)!
         scnView.pointOfView = shipCameraNode
         
-        // setup moving barriers
+//         setup moving barriers
+        setupMovingBarriers()
+        setupMovingBrickBarriers()
+
+        //        let brickBarrier = BrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), parentNode: scnScene.rootNode, forGameMode: .thru)
+        
+//        movingBrickBarriers = BrickBarrier(parentNode: scnScene.rootNode, baseBarrier: brickBarrier.barrier1)
+//        movingBrickBarriers.start()
+    }
+    
+    func setupMovingBarriers() {
         let barriers = scnScene.rootNode.childNode(withName:
             "Barriers", recursively: true)!
         movingBarriers = MovingBarrier(parentNode: scnScene.rootNode, baseBarrier: barriers)
         movingBarriers.start()
     }
     
-    @objc func addWall() {
+    func setupMovingBrickBarriers() {
+        movingBrickBarriers = MovingBrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), parentNode: scnScene.rootNode)
+        movingBrickBarriers.start()
+    }
+    
+    func addWall() {
         let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin, .shootThru]
         
         let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
@@ -342,6 +409,18 @@ class GameViewController: UIViewController {
         }
         
         scnScene.rootNode.addChildNode(newWall.node)
+    }
+    
+    func addBrickBarrier() {
+        let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin, .shootThru]
+        
+        let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
+        let randomIndex:Int = Int(randomNum)
+        
+//        let gameMode = possibleModes[randomIndex]
+//        let newWall = BrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), forGameMode:gameMode)
+//
+//        scnScene.rootNode.addChildNode(newWall.node)
     }
     
     @objc func updateHud() {
@@ -449,6 +528,11 @@ class GameViewController: UIViewController {
     }
     
     func shoot() {
+        
+        if scnScene.isPaused {
+            return
+        }
+        
         var leftPosition = shipNode.position
         leftPosition.x += 0.5
         let leftFireball = Fireball(position: leftPosition)
@@ -485,6 +569,55 @@ class GameViewController: UIViewController {
         
         game.playSound(scnScene.rootNode, name: "Blaster")
     }
+    
+    func newGamePressed() {
+        gameStarted = true
+        if scnScene.isPaused {
+            playPauseButtonPressed(UITapGestureRecognizer())
+        }
+        
+        hideMenu()
+        continueLabel.text = "Continue"
+        restartLabel.text = "Restart"
+        selectedMenuArrayIndex = 0
+        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
+    }
+    
+    func restartPressed() {
+        stopWalls()
+        game.reset()
+        hideMenu()
+        startWallTimers()
+        selectedMenuArrayIndex = 0
+        updateHud()
+        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
+        if scnScene.isPaused {
+            playPauseButtonPressed(UITapGestureRecognizer())
+        }
+    }
+    
+    func continuePressed() {
+        if scnScene.isPaused {
+            playPauseButtonPressed(UITapGestureRecognizer())
+        }
+        selectedMenuArrayIndex = 0
+        updateHud()
+        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
+    }
+    
+    func stopWalls() {
+        scnScene.rootNode.removeAction(forKey: wallTimerKey)
+        for node in scnScene.rootNode.childNodes {
+            let removeableNodes = ["Wall", "UnbreakableWall"]
+            guard let name = node.name else {
+                continue
+            }
+            if removeableNodes.contains(name) {
+                node.removeFromParentNode()
+            }
+        }
+    }
+    
     /*
     override var shouldAutorotate: Bool {
         return true
@@ -508,19 +641,74 @@ class GameViewController: UIViewController {
         // Release any cached data, images, etc that aren't in use.
     }
     @IBAction func playPauseButtonPressed(_ gestureRecognizer: UITapGestureRecognizer) {
+        if scnScene.isPaused {
+            hideMenu()
+        } else {
+            showMenu()
+        }
         scnScene.isPaused = !scnScene.isPaused
     }
+    
+    func togglePause() {
+        scnScene.isPaused = !scnScene.isPaused
+    }
+    
     @IBAction func shootPressed(_ gestureRecognizer: UITapGestureRecognizer) {
         //shoot()
     }
     
+    func setupSwipeRecognizer() {
+        
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
+        swipeUp.direction = UISwipeGestureRecognizer.Direction.up
+        self.view.addGestureRecognizer(swipeUp)
+        
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
+        swipeDown.direction = UISwipeGestureRecognizer.Direction.down
+        self.view.addGestureRecognizer(swipeDown)
+    }
+    
+    @objc func respondToSwipeGesture(_ gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case .right:
+                print("Swiped right")
+            case .down:
+                print("Swiped down")
+            case .left:
+                print("Swiped left")
+            case .up:
+                print("Swiped up")
+            default:
+                break
+            }
+        }
+    }
+    
     @IBAction func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
-        if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
-            
-            let translation = gestureRecognizer.translation(in: self.view)
-            shipNode.position.x = shipNode.position.x - Float(translation.x / 1000)
-            shipNode.position.y = shipNode.position.y - Float(translation.y / 1000)
-            checkShipPosition()
+        if scnScene.isPaused {
+            switch gestureRecognizer.state {
+                
+            case .began,
+                 .changed:
+                print("ended")
+                let velocity = gestureRecognizer.velocity(in: self.view)
+                if velocity.y > 0 {
+                    handleMenuSwipe(direction: .up)
+                } else {
+                    handleMenuSwipe(direction: .down)
+                }
+                
+            default: break
+            }
+        } else {
+            if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
+                
+                let translation = gestureRecognizer.translation(in: self.view)
+                shipNode.position.x = shipNode.position.x - Float(translation.x / 1000)
+                shipNode.position.y = shipNode.position.y - Float(translation.y / 1000)
+                checkShipPosition()
+            }
         }
     }
     
@@ -603,6 +791,11 @@ extension GameViewController: SCNPhysicsContactDelegate {
         if contactNode.physicsBody?.categoryBitMask ==
             ColliderType.brick.rawValue {
             //game.score += 1
+            let isBarrierBrick = contactNode.name == "BarrierBrick"
+            if isBarrierBrick {
+                return;
+            }
+            
             let isBreakableBrick = contactNode.name != "UnbreakableBrick"
             let wallNode = contactNode.parent
             if wallNode != nil,
@@ -611,6 +804,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 createExplosion(geometry: contactNode.geometry!,
                                 position: position,
                                 rotation: contactNode.presentation.rotation)
+                game.score += brickPoint(for: gameLevel)
+                updateHud()
             }
             
             if wasShot {
@@ -621,6 +816,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 game.playSound(scnScene.rootNode, name: "Brick")
                 game.shakeNode(shipNode)
                 game.lives -= 1
+                game.score += brickPoint(for: gameLevel)
+                updateHud()
                 
             }
             
@@ -654,10 +851,110 @@ extension GameViewController: SCNPhysicsContactDelegate {
     }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        for item in presses {
-            if item.type == .select {
-                shoot()
+        if !scnScene.isPaused {
+            for item in presses {
+                switch item.type {
+                case .select:
+                    shoot()
+                default:
+                    break
+                }
             }
+        }
+    }
+    
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        if scnScene.isPaused {
+            for item in presses {
+                switch item.type {
+                case .playPause:
+                    if !gameStarted {
+                        newGamePressed()
+                    } else {
+                        continuePressed()
+                    }
+                case .select:
+                    if !gameStarted {
+                        newGamePressed()
+                    } else {
+                        menuItemSelected()
+                    }
+                default:
+                    break
+                }
+            }
+        } else {
+            for item in presses {
+                switch item.type {
+                case .playPause:
+                    playPauseButtonPressed(UITapGestureRecognizer())
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    func handleMenuSwipe(direction: UISwipeGestureRecognizer.Direction) {
+        switch direction {
+        case .up:
+            menuSwipeUp()
+        case .down:
+            menuSwipeDown()
+        default:
+            break
+        }
+    }
+    
+    func menuSwipeUp() {
+        if !gameStarted {
+            return
+        }
+        if selectedMenuArrayIndex < menuArray.count - 1 {
+            selectedMenuArrayIndex += 1
+        }
+        // update UI
+        let menuItemString = menuArray[selectedMenuArrayIndex]
+        highlightMenuItem(menuItemString: menuItemString)
+    }
+    
+    func menuSwipeDown() {
+        if !gameStarted {
+            return
+        }
+        if selectedMenuArrayIndex > 0 {
+            selectedMenuArrayIndex -= 1
+        }
+        
+        // update UI
+        let menuItemString = menuArray[selectedMenuArrayIndex]
+        highlightMenuItem(menuItemString: menuItemString)
+    }
+    
+    func highlightMenuItem(menuItemString: String) {
+        // return all labels to normal
+        
+        continueLabel.textColor = .white
+        restartLabel.textColor = .white
+        
+        switch menuItemString {
+        case "Continue":
+            continueLabel.textColor = .orange
+        case "Restart":
+            restartLabel.textColor = .orange
+        default:
+            break
+        }
+    }
+    
+    func menuItemSelected() {
+        switch menuArray[selectedMenuArrayIndex] {
+        case "Continue":
+            continuePressed()
+        case "Restart":
+            restartPressed()
+        default:
+            break
         }
     }
 }
