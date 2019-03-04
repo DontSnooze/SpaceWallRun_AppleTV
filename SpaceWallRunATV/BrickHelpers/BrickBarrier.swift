@@ -10,12 +10,12 @@ import UIKit
 import SceneKit
 
 class BrickBarrier: NSObject {
-    var timer = Timer()
     var barrier1:SCNNode!
     var barrier2: SCNNode!
     var startingPosition: SCNVector3!
     var currentBarrier: SCNNode!
     var gameMode: GameModeType = .thru
+    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, parentNode: SCNNode, forGameMode: GameModeType) {
         
@@ -39,12 +39,7 @@ class BrickBarrier: NSObject {
         parentNode.addChildNode(barrier1)
         parentNode.addChildNode(barrier2)
         
-        
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.checkLocation()
-            }
-        }
+        startLocationTimers(for: currentBarrier)
     }
     
     init(parentNode: SCNNode, baseBarrier: SCNNode) {
@@ -70,11 +65,22 @@ class BrickBarrier: NSObject {
         //        barrier1.isHidden = true
         //        barrier2.isHidden = true
         
+        startLocationTimers(for: currentBarrier)
+    }
+    
+    func startLocationTimers(for node: SCNNode) {
+        let delay = SCNAction.wait(duration: 0.1)
+        let action = SCNAction.run { _ in
+            self.checkLocation()
+        }
+        let actionSequence = SCNAction.sequence([delay, action])
+        let repeatForeverAction = SCNAction.repeatForever(actionSequence)
+        node.runAction(repeatForeverAction, forKey: locationTimerKey)
     }
     
     func checkLocation() {
         if currentBarrier.position.z < -20 {
-            timer.invalidate()
+            currentBarrier.removeAction(forKey: locationTimerKey)
             // add the other barrier to the end
             currentBarrier = barrier1 == currentBarrier ? barrier2 : barrier1
             
@@ -90,14 +96,7 @@ class BrickBarrier: NSObject {
     }
     
     func start() {
-        //currentBarrier.runAction(SCNAction.moveBy(x: 0, y: 0, z: -500, duration: 30.0))
-        //        SCNAction repeat
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.checkLocation()
-            }
-        }
-        
+        startLocationTimers(for: currentBarrier)
     }
     
     class func createBarrierBrick(position: SCNVector3, forGameMode: GameModeType) -> SCNNode {

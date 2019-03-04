@@ -11,11 +11,11 @@ import SceneKit
 
 class MovingBarrier: NSObject {
     
-    var timer = Timer()
     var barrier1:SCNNode!
     var barrier2: SCNNode!
     var startingPosition: SCNVector3!
     var currentBarrier: SCNNode!
+    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, parentNode: SCNNode) {
         
@@ -64,9 +64,19 @@ class MovingBarrier: NSObject {
         
     }
     
+    func startLocationTimers(for node: SCNNode) {
+        let delay = SCNAction.wait(duration: 0.1)
+        let action = SCNAction.run { _ in
+            self.checkLocation()
+        }
+        let actionSequence = SCNAction.sequence([delay, action])
+        let repeatForeverAction = SCNAction.repeatForever(actionSequence)
+        node.runAction(repeatForeverAction, forKey: locationTimerKey)
+    }
+    
     func checkLocation() {
         if currentBarrier.position.z < -20 {
-            timer.invalidate()
+            currentBarrier.removeAction(forKey: locationTimerKey)
             // add the other barrier to the end
             currentBarrier = barrier1 == currentBarrier ? barrier2 : barrier1
             
@@ -82,14 +92,7 @@ class MovingBarrier: NSObject {
     }
     
     func start() {
-        //currentBarrier.runAction(SCNAction.moveBy(x: 0, y: 0, z: -500, duration: 30.0))
-//        SCNAction repeat
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.checkLocation()
-            }
-        }
-        
+        startLocationTimers(for: currentBarrier)
     }
     
     

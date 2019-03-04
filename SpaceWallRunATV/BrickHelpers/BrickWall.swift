@@ -13,12 +13,12 @@ class BrickWall: NSObject {
     var startBrickCount:Int = 0
     var endBrickCount:Int = 0
     var wallScore:Int = 0
-    var timer = Timer()
     var node:SCNNode!
     var gotWallScore = false
     var pointsPerWall = 4
     var gameMode: GameModeType = .thru
     var hasStartedFullMove = false;
+    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, forGameMode: GameModeType) {
         
@@ -141,11 +141,17 @@ class BrickWall: NSObject {
         }
         
         startBrickCount = node.childNodes.count
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.checkLocation()
-            }
+        startLocationTimers(for: node)
+    }
+    
+    func startLocationTimers(for node: SCNNode) {
+        let delay = SCNAction.wait(duration: 0.1)
+        let action = SCNAction.run { _ in
+            self.checkLocation()
         }
+        let actionSequence = SCNAction.sequence([delay, action])
+        let repeatForeverAction = SCNAction.repeatForever(actionSequence)
+        node.runAction(repeatForeverAction, forKey: locationTimerKey)
     }
     
     @objc func checkLocation() {
@@ -194,9 +200,6 @@ class BrickWall: NSObject {
             GameHelper.sharedInstance.score += wallScore
             GameHelper.sharedInstance.saveState()
             node.removeFromParentNode()
-            timer.invalidate()
-            
-            
         }
     }
     

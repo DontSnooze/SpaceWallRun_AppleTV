@@ -101,8 +101,6 @@ class GameViewController: UIViewController {
     var shipY: Float = 0
     var floorNode: SCNNode!
     var shipCameraNode: SCNNode!
-    var timer = Timer()
-    var hudTimer = Timer()
     var game = GameHelper.sharedInstance
     var spriteScene: SKScene!
     var movingBarriers: MovingBarrier!
@@ -111,6 +109,9 @@ class GameViewController: UIViewController {
     var gameMode:GameModeType = .thru
     var pointTally = 0
     var unbreakableWalls = [SCNNode]()
+    
+    var wallTimerKey = "WallTimerKey"
+    var hudTimerKey = "HudTimerKey"
     
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
@@ -134,17 +135,28 @@ class GameViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.addWall()
-            }
+        startWallTimers()
+        startHudTimers()
+    }
+    
+    func startWallTimers() {
+        let delay = SCNAction.wait(duration: 3.0)
+        let addWallAction = SCNAction.run { _ in
+            self.addWall()
         }
-        
-        hudTimer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.updateHud()
-            }
+        let sequence = SCNAction.sequence([delay, addWallAction])
+        let repeatForever = SCNAction.repeatForever(sequence)
+        scnScene.rootNode.runAction(repeatForever, forKey: wallTimerKey)
+    }
+    
+    func startHudTimers() {
+        let delay = SCNAction.wait(duration: 3.0)
+        let action = SCNAction.run { _ in
+            self.updateHud()
         }
+        let actionSequence = SCNAction.sequence([delay, action])
+        let repeatForeverAction = SCNAction.repeatForever(actionSequence)
+        scnScene.rootNode.runAction(repeatForeverAction, forKey: hudTimerKey)
     }
     
     func setupSounds() {
