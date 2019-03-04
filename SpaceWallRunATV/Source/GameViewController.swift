@@ -117,13 +117,15 @@ class GameViewController: UIViewController {
     var wallTimerKey = "WallTimerKey"
     var hudTimerKey = "HudTimerKey"
     var gameStarted = false
+    var menuArray = [String]()
+    var selectedMenuArrayIndex = 0
     
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupScene()
         
         spriteScene = SKScene(size: self.view.frame.size)
@@ -328,6 +330,9 @@ class GameViewController: UIViewController {
     }
     
     func setupMenu() {
+        menuArray = ["Continue", "Restart"]
+        selectedMenuArrayIndex = 0
+        highlightMenuItem(menuItemString: menuArray[0])
         setupSwipeRecognizer()
         menuView.layer.cornerRadius = 10
         menuView.layer.borderColor = UIColor.white.cgColor
@@ -573,15 +578,39 @@ class GameViewController: UIViewController {
         hideMenu()
         continueLabel.text = "Continue"
         restartLabel.text = "Restart"
+        selectedMenuArrayIndex = 0
+        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
     }
     
     func restartPressed() {
+        stopWalls()
         game.reset()
+        hideMenu()
+        startWallTimers()
+        selectedMenuArrayIndex = 0
+        updateHud()
+        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
     }
     
     func continuePressed() {
         if scnScene.isPaused {
             playPauseButtonPressed(UITapGestureRecognizer())
+        }
+        selectedMenuArrayIndex = 0
+        updateHud()
+        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
+    }
+    
+    func stopWalls() {
+        scnScene.rootNode.removeAction(forKey: wallTimerKey)
+        for node in scnScene.rootNode.childNodes {
+            let removeableNodes = ["Wall", "UnbreakableWall"]
+            guard let name = node.name else {
+                continue
+            }
+            if removeableNodes.contains(name) {
+                node.removeFromParentNode()
+            }
         }
     }
     
@@ -654,14 +683,28 @@ class GameViewController: UIViewController {
     
     @IBAction func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
         if scnScene.isPaused {
-            return
-        }
-        if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
-            
-            let translation = gestureRecognizer.translation(in: self.view)
-            shipNode.position.x = shipNode.position.x - Float(translation.x / 1000)
-            shipNode.position.y = shipNode.position.y - Float(translation.y / 1000)
-            checkShipPosition()
+            switch gestureRecognizer.state {
+                
+            case .began,
+                 .changed:
+                print("ended")
+                let velocity = gestureRecognizer.velocity(in: self.view)
+                if velocity.y > 0 {
+                    handleMenuSwipe(direction: .up)
+                } else {
+                    handleMenuSwipe(direction: .down)
+                }
+                
+            default: break
+            }
+        } else {
+            if gestureRecognizer.state == .began || gestureRecognizer.state == .changed {
+                
+                let translation = gestureRecognizer.translation(in: self.view)
+                shipNode.position.x = shipNode.position.x - Float(translation.x / 1000)
+                shipNode.position.y = shipNode.position.y - Float(translation.y / 1000)
+                checkShipPosition()
+            }
         }
     }
     
@@ -826,7 +869,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
                     if !gameStarted {
                         newGamePressed()
                     } else {
-                        continuePressed()
+                        menuItemSelected()
                     }
                 default:
                     break
@@ -841,6 +884,63 @@ extension GameViewController: SCNPhysicsContactDelegate {
                     break
                 }
             }
+        }
+    }
+    
+    func handleMenuSwipe(direction: UISwipeGestureRecognizer.Direction) {
+        switch direction {
+        case .up:
+            menuSwipeUp()
+        case .down:
+            menuSwipeDown()
+        default:
+            break
+        }
+    }
+    
+    func menuSwipeUp() {
+        if selectedMenuArrayIndex < menuArray.count - 1 {
+            selectedMenuArrayIndex += 1
+        }
+        // update UI
+        let menuItemString = menuArray[selectedMenuArrayIndex]
+        highlightMenuItem(menuItemString: menuItemString)
+    }
+    
+    func menuSwipeDown() {
+        if selectedMenuArrayIndex > 0 {
+            selectedMenuArrayIndex -= 1
+        }
+        
+        // update UI
+        let menuItemString = menuArray[selectedMenuArrayIndex]
+        highlightMenuItem(menuItemString: menuItemString)
+    }
+    
+    func highlightMenuItem(menuItemString: String) {
+        // return all labels to normal
+        
+        continueLabel.textColor = .white
+        restartLabel.textColor = .white
+        
+        switch menuItemString {
+        case "Continue":
+            continueLabel.textColor = .orange
+        case "Restart":
+            restartLabel.textColor = .orange
+        default:
+            break
+        }
+    }
+    
+    func menuItemSelected() {
+        switch menuArray[selectedMenuArrayIndex] {
+        case "Continue":
+            continuePressed()
+        case "Restart":
+            restartPressed()
+        default:
+            break
         }
     }
 }
