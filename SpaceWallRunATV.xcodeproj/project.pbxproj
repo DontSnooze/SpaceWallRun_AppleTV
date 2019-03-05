@@ -11,11 +11,15 @@
 		9C3AA6C9222D8D0E00035895 /* GameControllerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3AA6C8222D8D0E00035895 /* GameControllerHelper.swift */; };
 		9C3AA6CB222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3AA6CA222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift */; };
 		9C3AA6CE222DD2A300035895 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C3AA6CD222DD2A300035895 /* GameController.framework */; };
+		9C3AA6D3222E04CA00035895 /* LazerParticle2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 9C3AA6D1222E04CA00035895 /* LazerParticle2.sks */; };
+		9C3AA6D4222E04CA00035895 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C3AA6D2222E04CA00035895 /* Assets.xcassets */; };
 		9C671227222CD1D300EA5C4F /* MovingBrickBarrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C671226222CD1D300EA5C4F /* MovingBrickBarrier.swift */; };
+		9C6A69CB222E305600DF1576 /* LazerParticle.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 9C6A69CA222E305600DF1576 /* LazerParticle.scnp */; };
 		9C8CE5BA2229163E00AAF47E /* blaster.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9C8CE5B92229163E00AAF47E /* blaster.mp3 */; };
 		9C8CE5C02229D78800AAF47E /* BrickWall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5BF2229D78800AAF47E /* BrickWall.swift */; };
 		9C8CE5C22229D7D500AAF47E /* Fireball.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5C12229D7D500AAF47E /* Fireball.swift */; };
 		9C8CE5C42229DAEA00AAF47E /* BrickBarrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5C32229DAEA00AAF47E /* BrickBarrier.swift */; };
+		9CDF7670222E07210096720D /* LazerBeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDF766F222E07210096720D /* LazerBeam.swift */; };
 		B0698AB21DFD7E8E0031652F /* FireParticle.scnp in Resources */ = {isa = PBXBuildFile; fileRef = B0698AB11DFD7E8E0031652F /* FireParticle.scnp */; };
 		B0A07A3E1DFA523600734BC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */; };
 		B0A07A401DFA523600734BC3 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = B0A07A3F1DFA523600734BC3 /* art.scnassets */; };
@@ -58,11 +62,15 @@
 		9C3AA6C8222D8D0E00035895 /* GameControllerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerHelper.swift; sourceTree = "<group>"; };
 		9C3AA6CA222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+GameControllerHelperDelegate.swift"; sourceTree = "<group>"; };
 		9C3AA6CD222DD2A300035895 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		9C3AA6D1222E04CA00035895 /* LazerParticle2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LazerParticle2.sks; sourceTree = "<group>"; };
+		9C3AA6D2222E04CA00035895 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C671226222CD1D300EA5C4F /* MovingBrickBarrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingBrickBarrier.swift; sourceTree = "<group>"; };
+		9C6A69CA222E305600DF1576 /* LazerParticle.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = LazerParticle.scnp; sourceTree = "<group>"; };
 		9C8CE5B92229163E00AAF47E /* blaster.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = blaster.mp3; sourceTree = "<group>"; };
 		9C8CE5BF2229D78800AAF47E /* BrickWall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickWall.swift; sourceTree = "<group>"; };
 		9C8CE5C12229D7D500AAF47E /* Fireball.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fireball.swift; sourceTree = "<group>"; };
 		9C8CE5C32229DAEA00AAF47E /* BrickBarrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickBarrier.swift; sourceTree = "<group>"; };
+		9CDF766F222E07210096720D /* LazerBeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazerBeam.swift; sourceTree = "<group>"; };
 		B0698AB11DFD7E8E0031652F /* FireParticle.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = FireParticle.scnp; sourceTree = "<group>"; };
 		B0A07A3A1DFA523600734BC3 /* SpaceWallRunATV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceWallRunATV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -140,6 +148,9 @@
 				B0A07A701DFA537000734BC3 /* Explode.scnp */,
 				B0DE984A1DFD3F9D00BC6BDB /* Fire.scnp */,
 				B0698AB11DFD7E8E0031652F /* FireParticle.scnp */,
+				9C3AA6D1222E04CA00035895 /* LazerParticle2.sks */,
+				9C6A69CA222E305600DF1576 /* LazerParticle.scnp */,
+				9C3AA6D2222E04CA00035895 /* Assets.xcassets */,
 				B0DE984B1DFD3F9D00BC6BDB /* spark.png */,
 			);
 			path = Resources;
@@ -151,6 +162,7 @@
 				9C8CE5BF2229D78800AAF47E /* BrickWall.swift */,
 				9C8CE5C32229DAEA00AAF47E /* BrickBarrier.swift */,
 				9C8CE5C12229D7D500AAF47E /* Fireball.swift */,
+				9CDF766F222E07210096720D /* LazerBeam.swift */,
 				B0A07A791DFA53BD00734BC3 /* MovingBarrier.swift */,
 				9C671226222CD1D300EA5C4F /* MovingBrickBarrier.swift */,
 			);
@@ -366,7 +378,10 @@
 				B0DE984C1DFD3F9D00BC6BDB /* Fire.scnp in Resources */,
 				B0698AB21DFD7E8E0031652F /* FireParticle.scnp in Resources */,
 				B0A07A401DFA523600734BC3 /* art.scnassets in Resources */,
+				9C3AA6D4222E04CA00035895 /* Assets.xcassets in Resources */,
+				9C3AA6D3222E04CA00035895 /* LazerParticle2.sks in Resources */,
 				B0A07A761DFA537000734BC3 /* ExplodeGood.wav in Resources */,
+				9C6A69CB222E305600DF1576 /* LazerParticle.scnp in Resources */,
 				B0A07A771DFA537000734BC3 /* SuperTrebleTest.mp3 in Resources */,
 				B0A07A741DFA537000734BC3 /* Explode.scnp in Resources */,
 				B0A07A471DFA523600734BC3 /* Assets.xcassets in Resources */,
@@ -406,6 +421,7 @@
 				9C3AA6C9222D8D0E00035895 /* GameControllerHelper.swift in Sources */,
 				9C3AA6C7222D6A4D00035895 /* GameConstants.swift in Sources */,
 				9C671227222CD1D300EA5C4F /* MovingBrickBarrier.swift in Sources */,
+				9CDF7670222E07210096720D /* LazerBeam.swift in Sources */,
 				B0A07A6E1DFA536200734BC3 /* SCNAction+Extensions.swift in Sources */,
 				B0A07A6F1DFA536200734BC3 /* SCNVector3+Extensions.swift in Sources */,
 			);

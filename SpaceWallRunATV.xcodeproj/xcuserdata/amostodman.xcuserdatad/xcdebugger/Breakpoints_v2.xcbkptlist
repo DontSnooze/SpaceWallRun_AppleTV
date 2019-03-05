@@ -20,12 +20,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573434198.071712"
+            timestampString = "573453898.319451"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "511"
-            endingLineNumber = "511"
-            landmarkName = "playPauseButtonPressed(_:)"
+            startingLineNumber = "497"
+            endingLineNumber = "497"
+            landmarkName = "restartPressed()"
             landmarkType = "7">
             <Actions>
                <BreakpointActionProxy
@@ -45,12 +45,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573434198.072289"
+            timestampString = "573453898.320407"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "511"
-            endingLineNumber = "511"
-            landmarkName = "playPauseButtonPressed(_:)"
+            startingLineNumber = "497"
+            endingLineNumber = "497"
+            landmarkName = "restartPressed()"
             landmarkType = "7">
             <Actions>
                <BreakpointActionProxy
@@ -68,56 +68,15 @@
          <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
-            continueAfterRunningActions = "Yes"
-            filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573434198.0724829"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "666"
-            endingLineNumber = "666"
-            landmarkName = "menuSwipeUp()"
-            landmarkType = "7">
-            <Actions>
-               <BreakpointActionProxy
-                  ActionExtensionID = "Xcode.BreakpointAction.Log">
-                  <ActionContent
-                     message = "menuSwipeUp"
-                     conveyanceType = "0">
-                  </ActionContent>
-               </BreakpointActionProxy>
-            </Actions>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
             condition = "menuSwipeDown()"
             continueAfterRunningActions = "No"
             filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573434198.072642"
+            timestampString = "573453898.321092"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "678"
-            endingLineNumber = "678"
-            landmarkName = "menuSwipeDown()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SpaceWallRunATV/Source/GameViewController.swift"
-            timestampString = "573434198.072803"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "505"
-            endingLineNumber = "505"
-            landmarkName = "playPauseButtonPressed(_:)"
+            startingLineNumber = "673"
+            endingLineNumber = "673"
+            landmarkName = "physicsWorld(_:didBegin:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

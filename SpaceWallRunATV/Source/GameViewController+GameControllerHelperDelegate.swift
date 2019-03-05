@@ -43,8 +43,8 @@ extension GameViewController: GameControllerHelperDelegate {
                 handleMenuSwipe(direction: .down)
             }
         } else {
-            shipNode.position.x = shipNode.position.x - (displacement.x / 8)
-            shipNode.position.y = shipNode.position.y + (displacement.y / 8)
+            shipNode.position.x = shipNode.position.x - (displacement.x / 5)
+            shipNode.position.y = shipNode.position.y + (displacement.y / 5)
             checkShipPosition()
         }
     }
@@ -54,6 +54,7 @@ extension GameViewController: GameControllerHelperDelegate {
         // play/pause button on siri remote
         if !scnScene.isPaused {
             // special weapon
+            shootLazer()
         }
         
     }
@@ -79,6 +80,7 @@ extension GameViewController: GameControllerHelperDelegate {
     
     func controllerXReleased() {
 //        print("\(#function)")
+        // remove lazer
     }
     
     func shipNodeForControl() -> SCNNode {

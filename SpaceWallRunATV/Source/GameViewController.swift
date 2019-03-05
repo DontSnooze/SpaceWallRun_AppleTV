@@ -449,6 +449,36 @@ class GameViewController: GCEventViewController {
         game.playSound(scnScene.rootNode, name: "Blaster")
     }
     
+    func shootLazer() {
+        
+        if scnScene.isPaused {
+            return
+        }
+        
+        var position = shipNode.position
+        position.z += 25.0
+        let lazer = LazerBeam(position: position)
+        
+        let magic = SCNParticleSystem(named: "LazerParticle.scnp", inDirectory:
+                nil)!
+        
+        magic.emitterShape = lazer.node.geometry
+        magic.birthLocation = .surface
+        magic.colliderNodes = unbreakableWalls
+        //magic.particleDiesOnCollision = true
+        
+        lazer.node.geometry?.firstMaterial?.diffuse.contents = UIColor.black
+        
+        lazer.node.addParticleSystem(magic)
+        
+        
+        DispatchQueue.main.async {
+            self.scnScene.rootNode.addChildNode(lazer.node)
+        }
+        
+        game.playSound(scnScene.rootNode, name: "Blaster")
+    }
+    
     func newGamePressed() {
         gameStarted = true
         if scnScene.isPaused {
@@ -552,7 +582,9 @@ extension GameViewController: SCNPhysicsContactDelegate {
                       didBegin contact: SCNPhysicsContact) {
         // 3
         var contactNode: SCNNode!
-        var fireball: SCNNode!
+        var weaponNode: SCNNode!
+        var isFireballNode = false
+        var isLazerBeamNode = false
         
         if contact.nodeA.name == "Ship" {
             contactNode = contact.nodeB
@@ -563,10 +595,20 @@ extension GameViewController: SCNPhysicsContactDelegate {
         var wasShot = false
         if contact.nodeA.name == "fireball" || contact.nodeB.name == "fireball" {
             wasShot = true
+            isFireballNode = true
             if contact.nodeA.name == "fireball" {
-                fireball = contact.nodeA
+                weaponNode = contact.nodeA
             } else {
-                fireball = contact.nodeB
+                weaponNode = contact.nodeB
+            }
+        }
+        if contact.nodeA.name == "LazerBeam" || contact.nodeB.name == "LazerBeam" {
+            wasShot = true
+            isLazerBeamNode = true
+            if contact.nodeA.name == "LazerBeam" {
+                weaponNode = contact.nodeA
+            } else {
+                weaponNode = contact.nodeB
             }
         }
         // 4
@@ -598,7 +640,9 @@ extension GameViewController: SCNPhysicsContactDelegate {
             let wallNode = contactNode.parent
             if wallNode != nil,
                isBreakableBrick  {
-                let position = SCNVector3Make(contactNode.presentation.position.x, contactNode.presentation.position.y, (wallNode?.position.z)!)
+                let position = SCNVector3Make(contactNode.position.x, contactNode.position.y, (wallNode?.position.z)!)
+//                print("[AT] contactNode.presentation.position: \(contactNode.presentation.position)")
+//                print("[AT] contactNode.position: \(contactNode.position)")
                 createExplosion(geometry: contactNode.geometry!,
                                 position: position,
                                 rotation: contactNode.presentation.rotation)
@@ -606,28 +650,23 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 updateHud()
             }
             
-            if wasShot {
-                
-                fireball.isHidden = true
-                
-            } else {
+            if !wasShot {
                 game.playSound(scnScene.rootNode, name: "Brick")
                 game.shakeNode(shipNode)
                 game.lives -= 1
                 game.score += brickPoint(for: gameLevel)
                 updateHud()
-                
             }
             
             if isBreakableBrick {
+                // we either shot or crashed into the breakable brick. remove it
                 contactNode.removeFromParentNode()
             } else {
                 if wasShot {
-                    // trying to stop the particles from going thru the unbreakable walls (none of this works)
-                    fireball.removeAllActions()
-                    fireball.removeAllParticleSystems()
-                    fireball.removeFromParentNode()
+                    // shot unbreakable brick, just remove the weapon
+                    weaponNode.removeFromParentNode()
                 } else {
+                    // crashed into unbreakable brick, remove the brick so we can go thru
                     contactNode.removeFromParentNode()
                 }
             }
