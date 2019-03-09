@@ -42,13 +42,19 @@
                                 <rect key="frame" x="791" y="390" width="338" height="300"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Continue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wn3-zc-5Wb">
-                                        <rect key="frame" x="0.0" y="0.0" width="338" height="150"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="338" height="100"/>
                                         <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="70"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Restart" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBi-rU-Gux">
-                                        <rect key="frame" x="0.0" y="150" width="338" height="150"/>
+                                        <rect key="frame" x="0.0" y="100" width="338" height="100"/>
+                                        <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="70"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="elm-1c-3tW">
+                                        <rect key="frame" x="0.0" y="200" width="338" height="100"/>
                                         <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="70"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -82,6 +88,7 @@
                         <outlet property="menuView" destination="MM0-Hn-LM6" id="qdD-Ul-zKx"/>
                         <outlet property="restartLabel" destination="mBi-rU-Gux" id="p0O-iD-cKA"/>
                         <outlet property="scnView" destination="6Un-8E-G68" id="6Eo-Pb-FYQ"/>
+                        <outlet property="settingsLabel" destination="elm-1c-3tW" id="ENJ-IQ-l2h"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>

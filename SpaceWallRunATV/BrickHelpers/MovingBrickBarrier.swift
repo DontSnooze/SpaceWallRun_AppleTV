@@ -15,7 +15,6 @@ class MovingBrickBarrier: NSObject {
     var barrier2: SCNNode!
     var startingPosition: SCNVector3!
     var currentBarrier: SCNNode!
-    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, parentNode: SCNNode) {
         
@@ -97,6 +96,12 @@ class MovingBrickBarrier: NSObject {
     
     func start() {
         startLocationTimers(for: currentBarrier)
+    }
+    
+    func reset() {
+        barrier1.position = startingPosition
+        barrier2.position = startingPosition
+        barrier2.position.z = barrier2.position.z + 300
     }
     
     

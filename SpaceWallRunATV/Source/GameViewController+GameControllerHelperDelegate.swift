@@ -13,7 +13,7 @@ extension GameViewController: GameControllerHelperDelegate {
     func controllerMenuPressed() {
         print("\(#function)")
         
-        playPauseButtonPressed(UITapGestureRecognizer())
+        playPauseButtonPressed()
     }
     
     func controllerMenuReleased() {

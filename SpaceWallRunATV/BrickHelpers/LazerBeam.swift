@@ -11,7 +11,6 @@ import SceneKit
 
 class LazerBeam: NSObject {
     var node:SCNNode!
-    var locationTimerKey = "LocationTimerKey"
     var radialTimerKey = "RadialTimerKey"
     var cylinder = SCNCylinder(radius: 0.20, height: 50)
     var vurrentRadial: Int = 7

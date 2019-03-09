@@ -15,7 +15,6 @@ class MovingBarrier: NSObject {
     var barrier2: SCNNode!
     var startingPosition: SCNVector3!
     var currentBarrier: SCNNode!
-    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, parentNode: SCNNode) {
         

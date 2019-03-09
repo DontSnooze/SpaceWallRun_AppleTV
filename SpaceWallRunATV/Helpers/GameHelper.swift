@@ -30,8 +30,12 @@ public enum GameStateType {
     case GameOver
 }
 
+@objc protocol GameHelperDelegate: AnyObject {
+    func gameHelperWillResetGame()
+}
+
 class GameHelper {
-    
+    weak var delegate:GameHelperDelegate?
     var score:Int
     var highScore:Int
     var lastScore:Int
@@ -73,6 +77,7 @@ class GameHelper {
             lives += 1
         }
         if lives < 0 {
+            delegate?.gameHelperWillResetGame()
             reset()
         }
     }

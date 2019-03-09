@@ -15,7 +15,6 @@ class BrickBarrier: NSObject {
     var startingPosition: SCNVector3!
     var currentBarrier: SCNNode!
     var gameMode: GameModeType = .thru
-    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, parentNode: SCNNode, forGameMode: GameModeType) {
         
@@ -77,12 +76,12 @@ class BrickBarrier: NSObject {
         }
         let actionSequence = SCNAction.sequence([delay, action])
         let repeatForeverAction = SCNAction.repeatForever(actionSequence)
-        node.runAction(repeatForeverAction, forKey: locationTimerKey)
+        node.runAction(repeatForeverAction, forKey: brickBarrierLocationTimerKey)
     }
     
     func checkLocation() {
         if currentBarrier.position.z < -20 {
-            currentBarrier.removeAction(forKey: locationTimerKey)
+            currentBarrier.removeAction(forKey: brickBarrierLocationTimerKey)
             // add the other barrier to the end
             currentBarrier = barrier1 == currentBarrier ? barrier2 : barrier1
             

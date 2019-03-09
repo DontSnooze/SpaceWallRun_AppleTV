@@ -18,7 +18,6 @@ class BrickWall: NSObject {
     var pointsPerWall = 4
     var gameMode: GameModeType = .thru
     var hasStartedFullMove = false;
-    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3, forGameMode: GameModeType) {
         

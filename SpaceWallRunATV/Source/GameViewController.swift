@@ -94,6 +94,7 @@ class GameViewController: GCEventViewController {
     @IBOutlet weak var hudLabel: UILabel!
     @IBOutlet weak var continueLabel: UILabel!
     @IBOutlet weak var restartLabel: UILabel!
+    @IBOutlet weak var settingsLabel: UILabel!
     @IBOutlet weak var menuStackView: UIStackView!
     @IBOutlet weak var menuView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
@@ -114,9 +115,6 @@ class GameViewController: GCEventViewController {
     var gameMode:GameModeType = .thru
     var pointTally = 0
     var unbreakableWalls = [SCNNode]()
-    
-    var wallTimerKey = "WallTimerKey"
-    var hudTimerKey = "HudTimerKey"
     var gameStarted = false
     var menuArray = [String]()
     var selectedMenuArrayIndex = 0
@@ -130,6 +128,7 @@ class GameViewController: GCEventViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        game.delegate = self
         setupScene()
         
         spriteScene = SKScene(size: self.view.frame.size)
@@ -142,13 +141,17 @@ class GameViewController: GCEventViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.willRemoveUnbreakableWall(_:)), name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nil)
         setupMenu()
         scnScene.isPaused = true
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
+        
         startWallTimers()
         startHudTimers()
         
         showMenu()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        if !scnScene.isPaused {
+            playPauseButtonPressed()
+        }        
     }
     
     func startWallTimers() {
@@ -202,7 +205,7 @@ class GameViewController: GCEventViewController {
     }
     
     func setupMenu() {
-        menuArray = ["Continue", "Restart"]
+        menuArray = ["Continue", "Restart", "Settings"]
         selectedMenuArrayIndex = 0
         highlightMenuItem(menuItemString: menuArray[0])
         menuView.layer.cornerRadius = 10
@@ -247,7 +250,7 @@ class GameViewController: GCEventViewController {
         scnView.pointOfView = shipCameraNode
         
 //         setup moving barriers
-        setupMovingBarriers()
+//        setupMovingBarriers()
         setupMovingBrickBarriers()
 
         //        let brickBarrier = BrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), parentNode: scnScene.rootNode, forGameMode: .thru)
@@ -481,19 +484,15 @@ class GameViewController: GCEventViewController {
     
     func newGamePressed() {
         gameStarted = true
-        if scnScene.isPaused {
-            playPauseButtonPressed(UITapGestureRecognizer())
-        }
-        
-        hideMenu()
         continueLabel.text = "Continue"
         restartLabel.text = "Restart"
-        selectedMenuArrayIndex = 0
-        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
+        settingsLabel.text = "Settings"
+        restartPressed()
     }
     
     func restartPressed() {
         stopWalls()
+        resetBrickBarriers()
         game.reset()
         hideMenu()
         startWallTimers()
@@ -501,17 +500,21 @@ class GameViewController: GCEventViewController {
         updateHud()
         highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
         if scnScene.isPaused {
-            playPauseButtonPressed(UITapGestureRecognizer())
+            playPauseButtonPressed()
         }
     }
     
     func continuePressed() {
         if scnScene.isPaused {
-            playPauseButtonPressed(UITapGestureRecognizer())
+            playPauseButtonPressed()
         }
         selectedMenuArrayIndex = 0
         updateHud()
         highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
+    }
+    
+    func settingsPressed() {
+        restartPressed()
     }
     
     func stopWalls() {
@@ -527,11 +530,15 @@ class GameViewController: GCEventViewController {
         }
     }
     
+    func resetBrickBarriers() {
+        movingBrickBarriers.reset()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
-    @IBAction func playPauseButtonPressed(_ gestureRecognizer: UITapGestureRecognizer) {
+    @IBAction func playPauseButtonPressed() {
         if scnScene.isPaused {
             hideMenu()
         } else {
@@ -711,6 +718,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
     }
     
     func menuSwipeDown() {
+        print("\(#function)")
         if !gameStarted {
             return
         }
@@ -734,6 +742,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
             continueLabel.textColor = .orange
         case "Restart":
             restartLabel.textColor = .orange
+        case "Settings":
+            restartLabel.textColor = .orange
         default:
             break
         }
@@ -745,6 +755,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
             continuePressed()
         case "Restart":
             restartPressed()
+        case "Settings":
+            settingsPressed()
         default:
             break
         }

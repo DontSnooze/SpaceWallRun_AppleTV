@@ -11,7 +11,6 @@ import SceneKit
 
 class Fireball: NSObject {
     var node:SCNNode!
-    var locationTimerKey = "LocationTimerKey"
     
     init(position: SCNVector3) {
         

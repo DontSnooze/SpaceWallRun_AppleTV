@@ -8,6 +8,12 @@
 
 import Foundation
 
+// timer keys
+let locationTimerKey = "LocationTimerKey"
+let brickBarrierLocationTimerKey = "BrickBarrierLocationTimerKey"
+var wallTimerKey = "WallTimerKey"
+var hudTimerKey = "HudTimerKey"
+
 // brick points
 enum BrickPoint: Int {
     case level1 = 1
