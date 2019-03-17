@@ -100,6 +100,7 @@ class GameMenuViewController: UIViewController {
         tableArray.append("Joystick Sensitivity")
         
         tableView?.reloadData()
+        tableView?.setContentOffset(.zero, animated: true)
     }
     
     func setupTableArrayForJoystickSensitivity() {
