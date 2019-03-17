@@ -31,7 +31,7 @@ public enum GameStateType {
 }
 
 @objc protocol GameHelperDelegate: AnyObject {
-    func gameHelperWillResetGame()
+    func gameHelperWillResetGame(with lastScore: Int)
 }
 
 class GameHelper {
@@ -77,7 +77,11 @@ class GameHelper {
             lives += 1
         }
         if lives < 0 {
-            delegate?.gameHelperWillResetGame()
+            let scoreFormatted = String(format: "%0\(4)d", score)
+            let scoreText = "💥\(scoreFormatted)"
+
+            delegate?.gameHelperWillResetGame(with: score)
+            state = .GameOver
             reset()
         }
     }

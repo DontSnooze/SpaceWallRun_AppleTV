@@ -92,11 +92,6 @@ class GameViewController: GCEventViewController {
 
     @IBOutlet weak var scnView: SCNView!
     @IBOutlet weak var hudLabel: UILabel!
-    @IBOutlet weak var continueLabel: UILabel!
-    @IBOutlet weak var restartLabel: UILabel!
-    @IBOutlet weak var settingsLabel: UILabel!
-    @IBOutlet weak var menuStackView: UIStackView!
-    @IBOutlet weak var menuView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
     var scnScene: SCNScene!
     var shipNode: SCNNode!
@@ -115,12 +110,12 @@ class GameViewController: GCEventViewController {
     var gameMode:GameModeType = .thru
     var pointTally = 0
     var unbreakableWalls = [SCNNode]()
-    var gameStarted = false
-    var menuArray = [String]()
-    var selectedMenuArrayIndex = 0
     var gameLevel = GameLevel.two
+    var lastScore: Int = 0
+    var joystickSensitivity = 5
     
     let controllerHelper = GameControllerHelper()
+    var gameMenuType: GameMenuType = .main
     
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
@@ -139,19 +134,14 @@ class GameViewController: GCEventViewController {
         controllerHelper.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.willRemoveUnbreakableWall(_:)), name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nil)
-        setupMenu()
         scnScene.isPaused = true
         
         startWallTimers()
         startHudTimers()
-        
-        showMenu()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        if !scnScene.isPaused {
-            playPauseButtonPressed()
-        }        
+    override func viewDidAppear(_ animated: Bool) {
+        showMenuAlert()
     }
     
     func startWallTimers() {
@@ -204,29 +194,7 @@ class GameViewController: GCEventViewController {
         scnView.backgroundColor = UIColor.black
     }
     
-    func setupMenu() {
-        menuArray = ["Continue", "Restart", "Settings"]
-        selectedMenuArrayIndex = 0
-        highlightMenuItem(menuItemString: menuArray[0])
-        menuView.layer.cornerRadius = 10
-        menuView.layer.borderColor = UIColor.white.cgColor
-        menuView.layer.borderWidth = 1.0
-        menuView.clipsToBounds = true
-        continueLabel.text = "New Game"
-        restartLabel.text = ""
-    }
     
-    func showMenu() {
-        menuView.isHidden = false;
-        menuStackView.isHidden = false;
-        controllerUserInteractionEnabled = true
-    }
-    
-    func hideMenu() {
-        menuView.isHidden = true;
-        menuStackView.isHidden = true;
-        controllerUserInteractionEnabled = false
-    }
     
     func setupNodes() {
         shipCameraNode = scnScene.rootNode.childNode(withName:
@@ -483,10 +451,7 @@ class GameViewController: GCEventViewController {
     }
     
     func newGamePressed() {
-        gameStarted = true
-        continueLabel.text = "Continue"
-        restartLabel.text = "Restart"
-        settingsLabel.text = "Settings"
+        game.state = .Playing
         restartPressed()
     }
     
@@ -494,23 +459,15 @@ class GameViewController: GCEventViewController {
         stopWalls()
         resetBrickBarriers()
         game.reset()
-        hideMenu()
+//        hideMenu()
         startWallTimers()
-        selectedMenuArrayIndex = 0
         updateHud()
-        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
-        if scnScene.isPaused {
-            playPauseButtonPressed()
-        }
+        unpauseGame()
     }
     
     func continuePressed() {
-        if scnScene.isPaused {
-            playPauseButtonPressed()
-        }
-        selectedMenuArrayIndex = 0
+        unpauseGame()
         updateHud()
-        highlightMenuItem(menuItemString: menuArray[selectedMenuArrayIndex])
     }
     
     func settingsPressed() {
@@ -539,12 +496,19 @@ class GameViewController: GCEventViewController {
         // Release any cached data, images, etc that aren't in use.
     }
     @IBAction func playPauseButtonPressed() {
-        if scnScene.isPaused {
-            hideMenu()
+        if !scnScene.isPaused {
+            showMenuAlert()
         } else {
-            showMenu()
+            
         }
-        scnScene.isPaused = !scnScene.isPaused
+    }
+    
+    func pauseGame() {
+        scnScene.isPaused = true
+    }
+    
+    func unpauseGame() {
+        scnScene.isPaused = false
     }
     
     func checkShipPosition() {
@@ -693,76 +657,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
 //        // 4
 //        ballNode.physicsBody?.velocity.length = 5.0
     }
-    
-    func handleMenuSwipe(direction: UISwipeGestureRecognizer.Direction) {
-        switch direction {
-        case .up:
-            menuSwipeUp()
-        case .down:
-            menuSwipeDown()
-        default:
-            break
-        }
-    }
-    
-    func menuSwipeUp() {
-        if !gameStarted {
-            return
-        }
-        if selectedMenuArrayIndex < menuArray.count - 1 {
-            selectedMenuArrayIndex += 1
-        }
-        // update UI
-        let menuItemString = menuArray[selectedMenuArrayIndex]
-        highlightMenuItem(menuItemString: menuItemString)
-    }
-    
-    func menuSwipeDown() {
-        print("\(#function)")
-        if !gameStarted {
-            return
-        }
-        if selectedMenuArrayIndex > 0 {
-            selectedMenuArrayIndex -= 1
-        }
-        
-        // update UI
-        let menuItemString = menuArray[selectedMenuArrayIndex]
-        highlightMenuItem(menuItemString: menuItemString)
-    }
-    
-    func highlightMenuItem(menuItemString: String) {
-        // return all labels to normal
-        
-        continueLabel.textColor = .white
-        restartLabel.textColor = .white
-        
-        switch menuItemString {
-        case "Continue":
-            continueLabel.textColor = .orange
-        case "Restart":
-            restartLabel.textColor = .orange
-        case "Settings":
-            restartLabel.textColor = .orange
-        default:
-            break
-        }
-    }
-    
-    func menuItemSelected() {
-        switch menuArray[selectedMenuArrayIndex] {
-        case "Continue":
-            continuePressed()
-        case "Restart":
-            restartPressed()
-        case "Settings":
-            settingsPressed()
-        default:
-            break
-        }
-    }
-    
-    
 }
 
 

@@ -10,10 +10,29 @@ import Foundation
 import SceneKit
 
 extension GameViewController: GameControllerHelperDelegate {
+
     func controllerMenuPressed() {
-        print("\(#function)")
+        print("\(#function) controllerUserInteractionEnabled: \(self.controllerUserInteractionEnabled)")
         
-        playPauseButtonPressed()
+        if scnScene.isPaused {
+            switch gameMenuType {
+            case .main:
+                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+                break
+            case .settings:
+                self.dismiss(animated: false) {
+                    self.showMenuAlert()
+                }
+            case .joystickSensitivity:
+                self.dismiss(animated: false) {
+                    self.showSettingsAlert()
+                }
+            case .none:
+                break
+            }
+        } else {
+            showMenuAlert()
+        }
     }
     
     func controllerMenuReleased() {
@@ -32,19 +51,9 @@ extension GameViewController: GameControllerHelperDelegate {
     }
     
     func controllerMoved(with displacement: float2) {
-//        print("[at] \(#function)")
-        if scnScene.isPaused {
-            if displacement.x == 0 && displacement.y == 0 {
-                return
-            }
-            if displacement.y < 0 {
-                handleMenuSwipe(direction: .up)
-            } else {
-                handleMenuSwipe(direction: .down)
-            }
-        } else {
-            shipNode.position.x = shipNode.position.x - (displacement.x / 5)
-            shipNode.position.y = shipNode.position.y + (displacement.y / 5)
+        if !scnScene.isPaused {
+            shipNode.position.x = shipNode.position.x - (displacement.x / Float(joystickSensitivity))
+            shipNode.position.y = shipNode.position.y + (displacement.y / Float(joystickSensitivity))
             checkShipPosition()
         }
     }
@@ -67,15 +76,6 @@ extension GameViewController: GameControllerHelperDelegate {
     }
     
     func controllerAReleased() {
-        //
-        print("\(#function)")
-        if scnScene.isPaused {
-            if !gameStarted {
-                newGamePressed()
-            } else {
-                menuItemSelected()
-            }
-        }
     }
     
     func controllerXReleased() {

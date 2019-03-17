@@ -11,8 +11,9 @@ import Foundation
 // timer keys
 let locationTimerKey = "LocationTimerKey"
 let brickBarrierLocationTimerKey = "BrickBarrierLocationTimerKey"
-var wallTimerKey = "WallTimerKey"
-var hudTimerKey = "HudTimerKey"
+let wallTimerKey = "WallTimerKey"
+let hudTimerKey = "HudTimerKey"
+let defaultJoystickSensitivity = 5
 
 // brick points
 enum BrickPoint: Int {

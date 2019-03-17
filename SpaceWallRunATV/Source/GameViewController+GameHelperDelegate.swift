@@ -8,15 +8,15 @@
 
 import Foundation
 
-extension GameViewController: GameHelperDelegate {
-    func gameHelperWillResetGame() {
+extension GameViewController: GameHelperDelegate {    
+    func gameHelperWillResetGame(with lastScore: Int) {
+        self.lastScore = lastScore
         handleGameOver()
     }
     
     func handleGameOver() {
-        setupMenu()
         stopWalls()
-        gameStarted = false
+        game.state = .GameOver
         if !scnScene.isPaused {
             playPauseButtonPressed()
         }
