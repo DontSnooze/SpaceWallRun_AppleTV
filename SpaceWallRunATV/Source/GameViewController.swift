@@ -555,6 +555,8 @@ class GameViewController: GCEventViewController {
             break
         }
     }
+    
+    
 }
 
 extension GameViewController: SCNSceneRendererDelegate {

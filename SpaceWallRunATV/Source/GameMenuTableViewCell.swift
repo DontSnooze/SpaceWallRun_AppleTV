@@ -11,7 +11,6 @@ import UIKit
 class GameMenuTableViewCell: UITableViewCell {
 
     @IBOutlet var menuButton: UIButton?
-    @IBOutlet var menuLabel: UILabel?
     
     override func awakeFromNib() {
         super.awakeFromNib()

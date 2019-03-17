@@ -37,8 +37,9 @@ class GameMenuViewController: UIViewController {
         setupMenuTableArray()
         self.view.layer.borderWidth = 1.0
         self.view.layer.borderColor = UIColor.white.cgColor
-        self.view.layer.cornerRadius = 5.0
-        
+        self.view.layer.cornerRadius = 10.0
+     
+        tableView?.remembersLastFocusedIndexPath = false
     }
     
     func gameView() -> GameViewController? {
@@ -54,11 +55,15 @@ class GameMenuViewController: UIViewController {
         if let score = gameView()?.lastScore {
             lastScore = score
         }
-        let message = game.state == .GameOver ? "Score: 💥\(lastScore)\nHigh Score: 😎\(game.highScore)" : nil
         
-        titleLabel?.text = title
+        var displayString = title
         
+        if game.state == .GameOver {
+            displayString = "\(title)\nScore: 💥\(lastScore)\nHigh Score: 😎\(game.highScore)"
+        }
+        titleLabel?.text = displayString
     }
+    
     // MARK: - TableView Setup
     
     func setupTable(for menuType: GameMenuType) {
@@ -129,6 +134,15 @@ class GameMenuViewController: UIViewController {
 }
 
 extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    override var preferredFocusEnvironments: [UIFocusEnvironment] {
+        guard let tableView = tableView else {
+            return [UIFocusEnvironment]()
+        }
+        
+        return [tableView]
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableArray.count
     }
@@ -140,8 +154,17 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.menuLabel?.text = self.tableArray[indexPath.row]
         cell.menuButton?.setTitle(self.tableArray[indexPath.row], for: .normal)
+        cell.menuButton?.isSelected = false
+        
+        if
+            let gameView = gameView(),
+            gameView.gameMenuType == .joystickSensitivity,
+            GameMenuViewController.joystickSensitivityForUserInput(self.tableArray[indexPath.row]) == gameView.joystickSensitivity
+        {
+            cell.menuButton?.isSelected = true
+        }
+        
         cell.layoutIfNeeded()
         return cell
     }
@@ -163,6 +186,20 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
         default:
             break
         }
+    }
+    
+    func indexPathForPreferredFocusedView(in tableView: UITableView) -> IndexPath? {
+        guard
+            let gameView = gameView(),
+            gameView.gameMenuType == .joystickSensitivity
+        else {
+            print("\(#function) not on joystickSensitivity menu or gameView was nil")
+            return IndexPath(row: 0, section: 0)
+        }
+        
+        let currentSelectionIndex = rowForJoystickSensitivity(sensitivity: gameView.joystickSensitivity)
+        let indexPath = IndexPath(row: currentSelectionIndex, section: 0)
+        return indexPath
     }
     
     func handleMainMenuButtonPressed(at index: Int) {
@@ -250,5 +287,63 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
         gameView.gameMenuType = .settings
         delegate?.joystickSensitivitySelectedInGameMenu()
         setupTableArrayForSettings()
+    }
+    
+    class func joystickSensitivityForUserInput(_ userInputString: String) -> Int {
+        var result = 0
+        switch userInputString {
+        case "1":
+            result = 10
+        case "2":
+            result = 9
+        case "3":
+            result = 8
+        case "4":
+            result = 7
+        case "5":
+            result = 6
+        case "6":
+            result = 5
+        case "7":
+            result = 4
+        case "8":
+            result = 3
+        case "9":
+            result = 2
+        case "10":
+            result = 1
+        default:
+            break
+        }
+        return result
+    }
+    
+    func rowForJoystickSensitivity(sensitivity: Int) -> Int {
+        var result = 0
+        switch sensitivity {
+        case 10:
+            result = 0
+        case 9:
+            result = 1
+        case 8:
+            result = 2
+        case 7:
+            result = 3
+        case 6:
+            result = 4
+        case 5:
+            result = 5
+        case 4:
+            result = 6
+        case 3:
+            result = 7
+        case 2:
+            result = 8
+        case 1:
+            result = 9
+        default:
+            break
+        }
+        return result
     }
 }
