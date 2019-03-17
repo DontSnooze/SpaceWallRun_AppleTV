@@ -21,6 +21,8 @@
 		9C8CE5C02229D78800AAF47E /* BrickWall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5BF2229D78800AAF47E /* BrickWall.swift */; };
 		9C8CE5C22229D7D500AAF47E /* Fireball.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5C12229D7D500AAF47E /* Fireball.swift */; };
 		9C8CE5C42229DAEA00AAF47E /* BrickBarrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C8CE5C32229DAEA00AAF47E /* BrickBarrier.swift */; };
+		9CAA257C223E7770003E43E6 /* GameMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CAA257B223E7770003E43E6 /* GameMenuViewController.swift */; };
+		9CAA257E223E8615003E43E6 /* GameMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CAA257D223E8615003E43E6 /* GameMenuTableViewCell.swift */; };
 		9CDF7670222E07210096720D /* LazerBeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDF766F222E07210096720D /* LazerBeam.swift */; };
 		B0698AB21DFD7E8E0031652F /* FireParticle.scnp in Resources */ = {isa = PBXBuildFile; fileRef = B0698AB11DFD7E8E0031652F /* FireParticle.scnp */; };
 		B0A07A3E1DFA523600734BC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A07A3D1DFA523600734BC3 /* AppDelegate.swift */; };
@@ -74,6 +76,8 @@
 		9C8CE5BF2229D78800AAF47E /* BrickWall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickWall.swift; sourceTree = "<group>"; };
 		9C8CE5C12229D7D500AAF47E /* Fireball.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fireball.swift; sourceTree = "<group>"; };
 		9C8CE5C32229DAEA00AAF47E /* BrickBarrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickBarrier.swift; sourceTree = "<group>"; };
+		9CAA257B223E7770003E43E6 /* GameMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMenuViewController.swift; sourceTree = "<group>"; };
+		9CAA257D223E8615003E43E6 /* GameMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMenuTableViewCell.swift; sourceTree = "<group>"; };
 		9CDF766F222E07210096720D /* LazerBeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazerBeam.swift; sourceTree = "<group>"; };
 		B0698AB11DFD7E8E0031652F /* FireParticle.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = FireParticle.scnp; sourceTree = "<group>"; };
 		B0A07A3A1DFA523600734BC3 /* SpaceWallRunATV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceWallRunATV.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +205,8 @@
 				9C3AA6CA222D9EF700035895 /* GameViewController+GameControllerHelperDelegate.swift */,
 				9C6A69CC22343D7700DF1576 /* GameViewController+GameHelperDelegate.swift */,
 				9C83F3FD2234B78E00565C15 /* GameViewController+Menu.swift */,
+				9CAA257B223E7770003E43E6 /* GameMenuViewController.swift */,
+				9CAA257D223E8615003E43E6 /* GameMenuTableViewCell.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -422,8 +428,10 @@
 				B0A07A7A1DFA53BD00734BC3 /* GameViewController.swift in Sources */,
 				9C8CE5C42229DAEA00AAF47E /* BrickBarrier.swift in Sources */,
 				9C8CE5C22229D7D500AAF47E /* Fireball.swift in Sources */,
+				9CAA257E223E8615003E43E6 /* GameMenuTableViewCell.swift in Sources */,
 				B0A07A751DFA537000734BC3 /* GameHelper.swift in Sources */,
 				9C6A69CD22343D7700DF1576 /* GameViewController+GameHelperDelegate.swift in Sources */,
+				9CAA257C223E7770003E43E6 /* GameMenuViewController.swift in Sources */,
 				B0A07A3E1DFA523600734BC3 /* AppDelegate.swift in Sources */,
 				B0A07A7B1DFA53BD00734BC3 /* MovingBarrier.swift in Sources */,
 				9C3AA6C9222D8D0E00035895 /* GameControllerHelper.swift in Sources */,

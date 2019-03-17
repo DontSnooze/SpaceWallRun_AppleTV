@@ -117,8 +117,12 @@ class GameViewController: GCEventViewController {
     let controllerHelper = GameControllerHelper()
     var gameMenuType: GameMenuType = .main
     
+    var gameMenuView: GameMenuViewController?
+    
     //let moveAnalogStick =  🕹(diameter: 110)
     //let rotateAnalogStick = AnalogJoystick(diameter: 100)
+    
+    // MARK: - UIViewController -
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -141,8 +145,10 @@ class GameViewController: GCEventViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        showMenuAlert()
+        showMenu(true)
     }
+    
+    // MARK: - Timers -
     
     func startWallTimers() {
         let delay = SCNAction.wait(duration: 3.0)
@@ -167,6 +173,8 @@ class GameViewController: GCEventViewController {
         let repeatForeverAction = SCNAction.repeatForever(actionSequence)
         scnScene.rootNode.runAction(repeatForeverAction, forKey: hudTimerKey)
     }
+    
+    // MARK: - Setup -
     
     func setupSounds() {
         #if !targetEnvironment(simulator)
@@ -193,9 +201,7 @@ class GameViewController: GCEventViewController {
         scnScene.physicsWorld.contactDelegate = self
         scnView.backgroundColor = UIColor.black
     }
-    
-    
-    
+
     func setupNodes() {
         shipCameraNode = scnScene.rootNode.childNode(withName:
             "ShipCamera", recursively: true)!
@@ -238,6 +244,7 @@ class GameViewController: GCEventViewController {
         movingBrickBarriers = MovingBrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), parentNode: scnScene.rootNode)
         movingBrickBarriers.start()
     }
+    // MARK: - Walls -
     
     func addWall() {
         let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin, .shootThru]
@@ -459,7 +466,6 @@ class GameViewController: GCEventViewController {
         stopWalls()
         resetBrickBarriers()
         game.reset()
-//        hideMenu()
         startWallTimers()
         updateHud()
         unpauseGame()
@@ -497,7 +503,7 @@ class GameViewController: GCEventViewController {
     }
     @IBAction func playPauseButtonPressed() {
         if !scnScene.isPaused {
-            showMenuAlert()
+            showMenu(true)
         } else {
             
         }
@@ -535,6 +541,18 @@ class GameViewController: GCEventViewController {
             let thisNode = dict["node"] as? SCNNode {
             let walls = unbreakableWalls.filter { $0 != thisNode }
             unbreakableWalls = walls
+        }
+    }
+    
+    // MARK: - Navigation -
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.destination {
+            
+        case let gameMenuView as GameMenuViewController:
+            self.gameMenuView = gameMenuView
+            self.gameMenuView?.delegate = self
+        default:
+            break
         }
     }
 }

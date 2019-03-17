@@ -17,21 +17,16 @@ extension GameViewController: GameControllerHelperDelegate {
         if scnScene.isPaused {
             switch gameMenuType {
             case .main:
-                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
                 break
             case .settings:
-                self.dismiss(animated: false) {
-                    self.showMenuAlert()
-                }
+                gameMenuView?.setupTable(for: .main)
             case .joystickSensitivity:
-                self.dismiss(animated: false) {
-                    self.showSettingsAlert()
-                }
+                gameMenuView?.setupTable(for: .settings)
             case .none:
                 break
             }
         } else {
-            showMenuAlert()
+            showMenu(true)
         }
     }
     
