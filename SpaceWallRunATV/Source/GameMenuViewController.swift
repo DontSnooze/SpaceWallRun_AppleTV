@@ -113,27 +113,9 @@ class GameMenuViewController: UIViewController {
         tableView?.reloadData()
     }
     
-    // MARK: - Observers -
-    
-    func setupObservers() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleFocusUpdateNotification),
-            name: UIFocusSystem.didUpdateNotification,
-            object: nil)
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleFocusUpdateFailedNotification),
-            name: UIFocusSystem.movementDidFailNotification,
-            object: nil)
-    }
-    
     // MARK: - Focus Engine
     
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-//        print("\(#function)")
-//        print(context)
         
         if let previousCell = context.previouslyFocusedItem as? GameMenuTableViewCell {
             previousCell.menuButton?.isHighlighted = false
@@ -142,14 +124,6 @@ class GameMenuViewController: UIViewController {
         if let nextCell = context.nextFocusedItem as? GameMenuTableViewCell {
             nextCell.menuButton?.isHighlighted = true
         }
-    }
-    
-    @objc func handleFocusUpdateNotification(notification: Notification) {
-        print("\(#function)")
-    }
-    
-    @objc func handleFocusUpdateFailedNotification(notification: Notification) {
-        
     }
 }
 
