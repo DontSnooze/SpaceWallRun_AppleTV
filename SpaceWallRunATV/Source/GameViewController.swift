@@ -142,6 +142,8 @@ class GameViewController: GCEventViewController {
         
         startWallTimers()
         startHudTimers()
+        
+        registerForNotifications()
     }
     
     override func viewDidAppear(_ animated: Bool) {

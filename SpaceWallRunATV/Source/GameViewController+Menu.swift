@@ -65,4 +65,18 @@ extension GameViewController {
         gameMenuView?.view.isHidden = true
         gameMenuType = .none
     }
+
+    func registerForNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.gotAppWillBackGroundNotification), name: backGroundNotificationKey, object: nil)
+    }
+    
+    @objc func gotAppWillBackGroundNotification(notification: Notification) {
+        // pauses automatically, show the menu if needed
+        if gameMenuType == .none {
+            pauseGame()
+            showMenu(true)
+        }
+    }
+    
+    
 }

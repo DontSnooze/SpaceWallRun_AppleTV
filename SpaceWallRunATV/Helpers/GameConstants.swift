@@ -14,6 +14,7 @@ let brickBarrierLocationTimerKey = "BrickBarrierLocationTimerKey"
 let wallTimerKey = "WallTimerKey"
 let hudTimerKey = "HudTimerKey"
 let defaultJoystickSensitivity = 5
+let backGroundNotificationKey = NSNotification.Name("BackGroundNotificationKey")
 
 // brick points
 enum BrickPoint: Int {
