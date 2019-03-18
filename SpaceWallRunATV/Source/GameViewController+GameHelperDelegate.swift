@@ -11,6 +11,7 @@ import Foundation
 extension GameViewController: GameHelperDelegate {    
     func gameHelperWillResetGame(with lastScore: Int) {
         self.lastScore = lastScore
+        self.updateHud()
         handleGameOver()
     }
     

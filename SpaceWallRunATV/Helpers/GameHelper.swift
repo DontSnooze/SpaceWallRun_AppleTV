@@ -77,9 +77,10 @@ class GameHelper {
             lives += 1
         }
         if lives < 0 {
+            lives = 0
             let scoreFormatted = String(format: "%0\(4)d", score)
             let scoreText = "💥\(scoreFormatted)"
-
+            updateHUD()
             delegate?.gameHelperWillResetGame(with: score)
             state = .GameOver
             reset()
@@ -112,8 +113,6 @@ class GameHelper {
         hudNode = SCNNode(geometry: plane)
         hudNode.name = "HUD"
         hudNode.rotation = SCNVector4(x: 1, y: 0, z: 0, w: 3.14159265)
-        
-        
     }
     
     func updateHUD() {
