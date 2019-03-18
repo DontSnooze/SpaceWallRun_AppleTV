@@ -12,7 +12,7 @@ import SceneKit
 extension GameViewController: GameControllerHelperDelegate {
 
     func controllerMenuPressed() {
-        print("\(#function) controllerUserInteractionEnabled: \(self.controllerUserInteractionEnabled)")
+//        print("\(#function) controllerUserInteractionEnabled: \(self.controllerUserInteractionEnabled)")
         
         if scnScene.isPaused {
             switch gameMenuType {
@@ -35,7 +35,7 @@ extension GameViewController: GameControllerHelperDelegate {
     }
     
     func controllerRightTriggerPressed() {
-        print("\(#function)")
+//        print("\(#function)")
         if !scnScene.isPaused {
             shoot()
         }
@@ -54,7 +54,7 @@ extension GameViewController: GameControllerHelperDelegate {
     }
     
     func controllerXPressed() {
-        print("\(#function)")
+//        print("\(#function)")
         // play/pause button on siri remote
         if !scnScene.isPaused {
             // special weapon
@@ -64,7 +64,7 @@ extension GameViewController: GameControllerHelperDelegate {
     }
     
     func controllerAPressed() {
-        print("\(#function)")
+//        print("\(#function)")
         if !scnScene.isPaused {
             shoot()
         }

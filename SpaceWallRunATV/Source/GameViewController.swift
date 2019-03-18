@@ -138,7 +138,7 @@ class GameViewController: GCEventViewController {
         controllerHelper.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.willRemoveUnbreakableWall(_:)), name: NSNotification.Name(rawValue: "WillRemoveUnbreakableWall"), object: nil)
-        scnScene.isPaused = true
+        //scnScene.isPaused = true
         
         startWallTimers()
         startHudTimers()
@@ -147,7 +147,9 @@ class GameViewController: GCEventViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        showMenu(true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.showMenu(true)
+        }
     }
     
     // MARK: - Timers -
@@ -261,18 +263,6 @@ class GameViewController: GCEventViewController {
         }
         
         scnScene.rootNode.addChildNode(newWall.node)
-    }
-    
-    func addBrickBarrier() {
-        let possibleModes:[GameModeType] = [.thru, .fullMove, .angleMove, .spin, .shootThru]
-        
-        let randomNum:UInt32 = arc4random_uniform(UInt32(possibleModes.count))
-        let randomIndex:Int = Int(randomNum)
-        
-//        let gameMode = possibleModes[randomIndex]
-//        let newWall = BrickBarrier(position: SCNVector3Make(-1.5, 0, 190.0), forGameMode:gameMode)
-//
-//        scnScene.rootNode.addChildNode(newWall.node)
     }
     
     @objc func updateHud() {
@@ -538,7 +528,7 @@ class GameViewController: GCEventViewController {
     
     // handle notification
     @objc func willRemoveUnbreakableWall(_ notification: NSNotification) {
-        print(notification.userInfo ?? "")
+        // print(notification.userInfo ?? "")
         if let dict = notification.userInfo as NSDictionary?,
             let thisNode = dict["node"] as? SCNNode {
             let walls = unbreakableWalls.filter { $0 != thisNode }
@@ -576,8 +566,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
         // 3
         var contactNode: SCNNode!
         var weaponNode: SCNNode!
-        var isFireballNode = false
-        var isLazerBeamNode = false
         
         if contact.nodeA.name == "Ship" {
             contactNode = contact.nodeB
@@ -588,7 +576,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
         var wasShot = false
         if contact.nodeA.name == "fireball" || contact.nodeB.name == "fireball" {
             wasShot = true
-            isFireballNode = true
             if contact.nodeA.name == "fireball" {
                 weaponNode = contact.nodeA
             } else {
@@ -597,7 +584,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
         }
         if contact.nodeA.name == "LazerBeam" || contact.nodeB.name == "LazerBeam" {
             wasShot = true
-            isLazerBeamNode = true
             if contact.nodeA.name == "LazerBeam" {
                 weaponNode = contact.nodeA
             } else {

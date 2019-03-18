@@ -170,7 +170,7 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("\(#function)")
+//        print("\(#function)")
         
         guard let gameView = gameView() else {
             return
@@ -193,7 +193,7 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
             let gameView = gameView(),
             gameView.gameMenuType == .joystickSensitivity
         else {
-            print("\(#function) not on joystickSensitivity menu or gameView was nil")
+//            print("\(#function) not on joystickSensitivity menu or gameView was nil")
             return IndexPath(row: 0, section: 0)
         }
         

@@ -78,8 +78,6 @@ class GameHelper {
         }
         if lives < 0 {
             lives = 0
-            let scoreFormatted = String(format: "%0\(4)d", score)
-            let scoreText = "💥\(scoreFormatted)"
             updateHUD()
             delegate?.gameHelperWillResetGame(with: score)
             state = .GameOver

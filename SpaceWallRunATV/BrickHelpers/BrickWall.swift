@@ -62,9 +62,9 @@ class BrickWall: NSObject {
             
             // move around sometimes so you cant stay in the same place - particularly top left
             let left = SCNVector3Make(6, 0, 0)
-            let right = SCNVector3Make(-2, 0, 0)
+            // let right = SCNVector3Make(-2, 0, 0)
             let up = SCNVector3Make(0, 6, 0)
-            let down = SCNVector3Make(0, -4, 0)
+            // let down = SCNVector3Make(0, -4, 0)
             
             let possibleDirections = [left, up,]
             
@@ -83,7 +83,7 @@ class BrickWall: NSObject {
             
             let w = CGFloat(max.x - min.x)
             let h = CGFloat(max.y - min.y)
-            let l =  CGFloat( max.z - min.z)
+            // let l =  CGFloat( max.z - min.z)
             
             let spinType = randomSpinType()
             let spinDirection = randomSpinDirection()

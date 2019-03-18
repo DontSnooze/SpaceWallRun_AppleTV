@@ -43,7 +43,7 @@ import GameController
     func getControllers() {
         controllers = GCController.controllers()
         if controllers.count < 1 {
-            print("[at] no controller try and attach to them")
+//            print("[at] no controller try and attach to them")
             attachControllers()
         }
     }
@@ -55,10 +55,10 @@ import GameController
     }
     // MARK: - GCController Observers -
     @objc func gcControllerDidConnect(_ notification: NSNotification) {
-        print("\(#function)")
+//        print("\(#function)")
         // assign the gameController which is found - will break if more than 1
         guard let connectedController = notification.object as? GCController else {
-           print("[at] Could not find a controller")
+//           print("[at] Could not find a controller")
             return
         }
         controllers = GCController.controllers()
@@ -68,7 +68,7 @@ import GameController
     
     @objc func gcControllerDidDisconnect(_ notification: NSNotification) {
         // if a controller disconnects we should see it
-        print("\(#function)")
+//        print("\(#function)")
         controllers = GCController.controllers()
     }
     
@@ -77,23 +77,23 @@ import GameController
         for controller in controllers {
             //if it is a gamepad
             if let gamepad = controller.extendedGamepad {
-                print("[at] Gamepad found")
+//                print("[at] Gamepad found")
                 registerGamepadEvents(gamepad: gamepad)
             }
             
             //if it is a siri remote
             if let microGamepad = controller.microGamepad {
-                print("[at] microGamepad found")
+//                print("[at] microGamepad found")
                 registermicroGamepadEvents(microGamepad: microGamepad)
             }
         }
     }
     
     func registerGamepadEvents(gamepad: GCExtendedGamepad){
-        print("\(#function)")
+//        print("\(#function)")
         //setup the handlers
         let buttonAHandler: GCControllerButtonValueChangedHandler = {  button, _, pressed in
-            print("[at] buttonAHandler")
+//            print("[at] buttonAHandler")
             if button.isPressed {
                 self.delegate?.controllerAPressed()
             } else {
@@ -102,7 +102,7 @@ import GameController
         }
         
         let buttonXHandler: GCControllerButtonValueChangedHandler = {  button, _, pressed in
-            print("[at] buttonXHandler")
+//            print("[at] buttonXHandler")
             if button.isPressed {
                 self.delegate?.controllerXPressed()
             } else {
@@ -111,7 +111,7 @@ import GameController
         }
         
         let buttonMenuHandler: GCControllerButtonValueChangedHandler = {  button, _, pressed in
-            print("[at] buttonMenuHandler")
+//            print("[at] buttonMenuHandler")
             if button.isPressed {
                 self.delegate?.controllerMenuPressed()
             } else {
@@ -120,7 +120,7 @@ import GameController
         }
         
         let rightTriggerHandler: GCControllerButtonValueChangedHandler = {  button, _, pressed in
-            print("[at] rightTriggerHandler")
+//            print("[at] rightTriggerHandler")
             if button.isPressed {
                 self.delegate?.controllerRightTriggerPressed()
             } else {
@@ -146,10 +146,10 @@ import GameController
     }
     
     func registermicroGamepadEvents(microGamepad :GCMicroGamepad){
-        print("\(#function)")
+//        print("\(#function)")
         //setup the handlers
         let buttonAHandler: GCControllerButtonValueChangedHandler = {  button, _, pressed in
-            print("[at] buttonAHandler")
+//            print("[at] buttonAHandler")
             if button.isPressed {
                 self.delegate?.controllerAPressed()
             } else {
@@ -158,7 +158,7 @@ import GameController
         }
         
         let buttonXHandler: GCControllerButtonValueChangedHandler = {  button, _, pressed in
-            print("[at] buttonXHandler")
+//            print("[at] buttonXHandler")
             if button.isPressed {
                 self.delegate?.controllerXPressed()
             } else {
