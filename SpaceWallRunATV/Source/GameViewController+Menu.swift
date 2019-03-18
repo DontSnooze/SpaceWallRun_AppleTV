@@ -12,6 +12,7 @@ import UIKit
 enum GameMenuType {
     case main
     case settings
+    case difficulty
     case joystickSensitivity
     case none
 }
@@ -30,6 +31,14 @@ extension GameViewController: GameMenuViewControllerDelegate {
     }
     
     func settingsPressedInGameMenu() {
+        controllerUserInteractionEnabled = false
+    }
+    
+    func difficultyPressedInGameMenu() {
+        controllerUserInteractionEnabled = false
+    }
+    
+    func difficultySelectedInGameMenu() {
         controllerUserInteractionEnabled = false
     }
     

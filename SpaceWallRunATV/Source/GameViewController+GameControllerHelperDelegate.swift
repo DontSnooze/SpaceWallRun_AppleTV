@@ -20,6 +20,8 @@ extension GameViewController: GameControllerHelperDelegate {
                 break
             case .settings:
                 gameMenuView?.setupTable(for: .main)
+            case .difficulty:
+                gameMenuView?.setupTable(for: .settings)
             case .joystickSensitivity:
                 gameMenuView?.setupTable(for: .settings)
             case .none:

@@ -42,6 +42,7 @@ class GameHelper {
     var lives:Int
     var state = GameStateType.TapToPlay
     var extraLifeScore:Int = 1000
+    var gameDifficulty: GameDifficulty = .easy
     
     var hudNode:SCNNode!
     var labelNode:SKLabelNode!
@@ -55,7 +56,7 @@ class GameHelper {
         score = 0
         lastScore = 0
         highScore = 0
-        lives = 10
+        lives = livesForGameDifficulty(difficulty: gameDifficulty).rawValue
         let defaults = UserDefaults.standard
         score = defaults.integer(forKey: "lastScore")
         score = 0
@@ -138,7 +139,7 @@ class GameHelper {
     
     func reset() {
         score = 0
-        lives = 10
+        lives = livesForGameDifficulty(difficulty: gameDifficulty).rawValue
         extraLifeScore = 1000
     }
     

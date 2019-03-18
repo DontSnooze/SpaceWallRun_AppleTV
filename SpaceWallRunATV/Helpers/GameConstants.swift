@@ -15,6 +15,33 @@ let wallTimerKey = "WallTimerKey"
 let hudTimerKey = "HudTimerKey"
 let defaultJoystickSensitivity = 5
 let backGroundNotificationKey = NSNotification.Name("BackGroundNotificationKey")
+// lives
+enum GameLives: Int {
+    case superEasy = 100000000
+    case easy = 10
+    case hard = 5
+    case survival = 0
+}
+
+enum GameDifficulty {
+    case superEasy
+    case easy
+    case hard
+    case survival
+}
+
+func livesForGameDifficulty(difficulty: GameDifficulty) -> GameLives {
+    switch difficulty {
+    case .superEasy:
+        return .superEasy
+    case .easy:
+        return .easy
+    case .hard:
+        return .hard
+    case .survival:
+        return .survival
+    }
+}
 
 // brick points
 enum BrickPoint: Int {

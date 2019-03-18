@@ -14,6 +14,8 @@ import SceneKit
     func continuePressedInGameMenu()
     func restartPressedInGameMenu()
     func settingsPressedInGameMenu()
+    func difficultyPressedInGameMenu()
+    func difficultySelectedInGameMenu()
     func joystickSensitivityPressedInGameMenu()
     func joystickSensitivitySelectedInGameMenu()
 }
@@ -73,6 +75,8 @@ class GameMenuViewController: UIViewController {
             setupMenuTableArray()
         case .settings:
             setupTableArrayForSettings()
+        case .difficulty:
+            setupTableArrayForDifficulty()
         case .joystickSensitivity:
             setupTableArrayForJoystickSensitivity()
         default:
@@ -102,10 +106,18 @@ class GameMenuViewController: UIViewController {
         gameView()?.controllerUserInteractionEnabled = false
         gameView()?.gameMenuType = .settings
         tableArray = [String]()
+        tableArray.append("Difficulty")
         tableArray.append("Joystick Sensitivity")
         
         tableView?.reloadData()
         tableView?.setContentOffset(.zero, animated: true)
+    }
+    
+    func setupTableArrayForDifficulty() {
+        gameView()?.controllerUserInteractionEnabled = false
+        gameView()?.gameMenuType = .difficulty
+        tableArray = ["Super Easy", "Easy", "Hard", "Survival"]
+        tableView?.reloadData()
     }
     
     func setupTableArrayForJoystickSensitivity() {
@@ -159,6 +171,14 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
         
         if
             let gameView = gameView(),
+            gameView.gameMenuType == .difficulty,
+            GameMenuViewController.difficultyForUserInput(self.tableArray[indexPath.row]) == game.gameDifficulty
+        {
+            cell.menuButton?.isSelected = true
+        }
+        
+        if
+            let gameView = gameView(),
             gameView.gameMenuType == .joystickSensitivity,
             GameMenuViewController.joystickSensitivityForUserInput(self.tableArray[indexPath.row]) == gameView.joystickSensitivity
         {
@@ -183,22 +203,33 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
             handleMenuSettingsButtonPressed(at: indexPath.row)
         case .joystickSensitivity:
             handleJoystickSensitivityButtonPressed(at: indexPath.row)
+        case .difficulty:
+            handleDifficultyButtonPressed(at: indexPath.row)
         default:
             break
         }
     }
     
     func indexPathForPreferredFocusedView(in tableView: UITableView) -> IndexPath? {
+        var indexPath = IndexPath(row: 0, section: 0)
+        
         guard
-            let gameView = gameView(),
-            gameView.gameMenuType == .joystickSensitivity
+            let gameView = gameView()
         else {
-//            print("\(#function) not on joystickSensitivity menu or gameView was nil")
-            return IndexPath(row: 0, section: 0)
+            print("\(#function) gameView was nil")
+            return indexPath
         }
         
-        let currentSelectionIndex = rowForJoystickSensitivity(sensitivity: gameView.joystickSensitivity)
-        let indexPath = IndexPath(row: currentSelectionIndex, section: 0)
+        if gameView.gameMenuType == .difficulty {
+            let currentSelectionIndex = rowForDifficulty(difficulty: game.gameDifficulty)
+            indexPath = IndexPath(row: currentSelectionIndex, section: 0)
+        }
+        
+        if gameView.gameMenuType == .joystickSensitivity {
+            let currentSelectionIndex = rowForJoystickSensitivity(sensitivity: gameView.joystickSensitivity)
+            indexPath = IndexPath(row: currentSelectionIndex, section: 0)
+        }        
+        
         return indexPath
     }
     
@@ -242,6 +273,10 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         switch buttonString {
+        case "Difficulty":
+            delegate?.difficultyPressedInGameMenu()
+            gameView.gameMenuType = .difficulty
+            setupTableArrayForDifficulty()
         case "Joystick Sensitivity":
             delegate?.joystickSensitivityPressedInGameMenu()
             gameView.gameMenuType = .joystickSensitivity
@@ -343,6 +378,64 @@ extension GameMenuViewController: UITableViewDelegate, UITableViewDataSource {
             result = 9
         default:
             break
+        }
+        return result
+    }
+    
+    func handleDifficultyButtonPressed(at index: Int) {
+        let buttonString = tableArray[index]
+        
+        guard let gameView = gameView() else {
+            print("\(#function) gameView was nil")
+            return
+        }
+        
+        switch buttonString {
+        case "Super Easy":
+            game.gameDifficulty = .superEasy
+        case "Easy":
+            game.gameDifficulty = .easy
+        case "Hard":
+            game.gameDifficulty = .hard
+        case "Survival":
+            game.gameDifficulty = .survival
+        default:
+            break
+        }
+        
+        gameView.gameMenuType = .settings
+        delegate?.difficultySelectedInGameMenu()
+        setupTableArrayForSettings()
+    }
+    
+    class func difficultyForUserInput(_ userInputString: String) -> GameDifficulty {
+        var result = GameDifficulty.easy
+        switch userInputString {
+        case "Super Easy":
+            result = .superEasy
+        case "Easy":
+            result = .easy
+        case "Hard":
+            result = .hard
+        case "Survival":
+            result = .survival
+        default:
+            break
+        }
+        return result
+    }
+    
+    func rowForDifficulty(difficulty: GameDifficulty) -> Int {
+        var result = 0
+        switch difficulty {
+        case .superEasy:
+            result = 0
+        case .easy:
+            result = 1
+        case .hard:
+            result = 2
+        case .survival:
+            result = 3
         }
         return result
     }

@@ -24,7 +24,7 @@
                             <sceneKitView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Un-8E-G68">
                                 <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                             </sceneKitView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7O3-VI-buQ">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="                     " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7O3-VI-buQ">
                                 <rect key="frame" x="20" y="20" width="1880" height="82"/>
                                 <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="70"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -97,7 +97,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="O4f-t3-Jyo">
-                                                    <rect key="frame" x="10" y="5" width="600" height="96"/>
+                                                    <rect key="frame" x="10" y="5" width="600" height="95"/>
                                                     <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
                                                     <state key="normal" title="Button"/>
                                                     <state key="selected">
